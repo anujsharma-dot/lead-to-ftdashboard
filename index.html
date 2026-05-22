@@ -1,1830 +1,1748 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTD Talk Time Dashboard - Megha</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #0d0f14;
-            --surface: #161922;
-            --surface2: #1e2330;
-            --border: #2a3045;
-            --header-h: #1a2035;
-            --accent: #4f8ef7;
-            --accent2: #f7a74f;
-            --accent3: #4ff7b0;
-            --accent4: #f74f7a;
-            --accent5: #a78bfa;
-            --text: #e8ecf5;
-            --text-dim: #8892a4;
-        }
-
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .page-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .org-name {
-            font-size: 13px;
-            color: var(--text-dim);
-        }
-
-        .main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px 32px;
-        }
-
-        .top-tabs-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-        }
-
-        .top-tabs {
-            display: flex;
-            gap: 12px;
-        }
-
-        .last-updated {
-            font-size: 11px;
-            color: var(--text-dim);
-            font-family: 'Space Mono', monospace;
-            white-space: nowrap;
-        }
-
-        .tab {
-            padding: 10px 22px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text-dim);
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab:hover {
-            border-color: var(--accent);
-            color: var(--text);
-        }
-
-        .tab.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        .tab:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* Password Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.82);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal-box {
-            background: var(--surface);
-            border-radius: 14px;
-            padding: 32px;
-            max-width: 380px;
-            width: 100%;
-        }
-
-        .modal-box h2 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: var(--text);
-        }
-
-        .modal-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
-            font-family: 'DM Sans', sans-serif;
-            margin-bottom: 16px;
-        }
-
-        .modal-box input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .modal-box input.error {
-            border-color: var(--accent4);
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-size: 13px;
-        }
-
-        .alert-error {
-            background: rgba(247, 79, 122, 0.15);
-            color: var(--accent4);
-            border: 1px solid var(--accent4);
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-blue {
-            background: var(--accent);
-            color: #fff;
-            width: 100%;
-        }
-
-        .btn-green {
-            background: var(--accent3);
-            color: #000;
-            width: 100%;
-        }
-
-        .btn-orange {
-            background: var(--accent2);
-            color: #000;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        /* Upload Section */
-        .upload-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .upload-zone {
-            background: var(--surface);
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .upload-zone:hover {
-            border-color: var(--accent);
-        }
-
-        .upload-zone.done {
-            border-color: var(--accent3);
-            background: rgba(79, 247, 176, 0.05);
-        }
-
-        .upload-zone h3 {
-            font-size: 15px;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .upload-zone p {
-            font-size: 12px;
-            color: var(--text-dim);
-            margin-bottom: 16px;
-        }
-
-        .upload-label {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--accent);
-            color: #fff;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-badge {
-            margin-top: 12px;
-            font-size: 11px;
-            color: var(--accent3);
-            font-family: 'Space Mono', monospace;
-        }
-
-        .bar {
-            padding: 14px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .bar.info {
-            background: rgba(79, 142, 247, 0.15);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-        }
-
-        .bar.ok {
-            background: rgba(79, 247, 176, 0.15);
-            color: var(--accent3);
-            border: 1px solid var(--accent3);
-        }
-
-        .bar.err {
-            background: rgba(247, 79, 122, 0.15);
-            color: var(--accent4);
-            border: 1px solid var(--accent4);
-        }
-
-        /* Insights Cards */
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .insight-card {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 14px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .insight-card.green {
-            border-left-color: var(--accent3);
-        }
-
-        .insight-card.orange {
-            border-left-color: var(--accent2);
-        }
-
-        .insight-card.red {
-            border-left-color: var(--accent4);
-        }
-
-        .insight-card h4 {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-        }
-
-        .insight-card .value {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            margin-bottom: 4px;
-        }
-
-        .insight-card .label {
-            font-size: 12px;
-            color: var(--text-dim);
-        }
-
-        /* Performance Cards - Equal Dimensions */
-        .performance-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .perf-card {
-            background: var(--surface);
-            padding: 20px;
-            border-radius: 14px;
-            height: 420px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .perf-card.chart {
-            border-left: 4px solid var(--accent);
-        }
-
-        .perf-card.top {
-            border-left: 4px solid var(--accent3);
-        }
-
-        .perf-card.bottom {
-            border-left: 4px solid var(--accent4);
-        }
-
-        .perf-card h4 {
-            font-size: 11px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            color: var(--text);
-            letter-spacing: 0.5px;
-        }
-
-        .perf-card .chart-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 0;
-        }
-
-        .perf-card .list-container {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-height: 0;
-        }
-
-        .perf-card .list-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .perf-card .list-container::-webkit-scrollbar-track {
-            background: var(--bg);
-            border-radius: 3px;
-        }
-
-        .perf-card .list-container::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .performer-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .performer-item.top {
-            background: rgba(79,247,176,0.1);
-        }
-
-        .performer-item.bottom {
-            background: rgba(247,79,122,0.1);
-        }
-
-        .performer-item:hover {
-            transform: translateX(4px);
-        }
-
-        /* Charts */
-        .chart-card {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 14px;
-        }
-
-        .chart-card h4 {
-            font-size: 13px;
-            text-transform: uppercase;
-            color: var(--text);
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        /* Table */
-        .table-section {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 14px;
-            margin-bottom: 24px;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .table-header h3 {
-            font-size: 15px;
-            color: var(--text);
-            flex: 1;
-            text-align: center;
-        }
-
-        .tscroll {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: var(--header-h);
-            color: var(--text);
-            padding: 8px 16px;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-            vertical-align: top;
-        }
-
-        .th-content {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .th-label {
-            font-size: 11px;
-        }
-
-        .column-filter, .column-sort {
-            width: 100%;
-            padding: 4px 6px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 10px;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-        }
-
-        .column-filter:focus, .column-sort:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        td {
-            padding: 11px 16px;
-            border-bottom: 1px solid var(--border);
-            font-size: 11px;
-            font-family: 'Space Mono', monospace;
-            color: var(--text);
-            white-space: nowrap;
-        }
-
-        tr:hover {
-            background: var(--surface2);
-        }
-
-        .val-num {
-            color: var(--text);
-        }
-
-        .val-pct {
-            color: var(--accent2);
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            display: inline-block;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .status-above {
-            background: var(--accent3);
-            color: #000;
-        }
-
-        .status-below {
-            background: var(--accent4);
-            color: #fff;
-        }
-
-        /* Unit Section for TL Report */
-        .unit-section {
-            margin-bottom: 24px;
-        }
-
-        .unit-header {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent5) 100%);
-            color: #fff;
-            padding: 16px 24px;
-            border-radius: 14px 14px 0 0;
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .unit-table {
-            border: 2px solid var(--accent);
-            border-radius: 0 0 14px 14px;
-            overflow: hidden;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .performance-grid {
-                grid-template-columns: 1fr;
-            }
-            .perf-card {
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .main {
-                padding: 16px;
-            }
-            header {
-                padding: 12px 16px;
-            }
-            .top-tabs-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .last-updated {
-                align-self: flex-end;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .insights-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FT MOM Analysis Dashboard — DAD</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--surface:#161922;--surface2:#1e2330;--border:#2a3045;
+  --accent:#4f8ef7;--accent2:#f7a74f;--accent3:#4ff7b0;--accent4:#f74f7a;
+  --accent5:#a78bfa;--text:#e8ecf5;--text-dim:#8892a4;--header-h:#1a2035;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.logo span{color:var(--text-dim)}
+header h1{font-size:18px;font-weight:600;letter-spacing:-.02em}
+.main{padding:24px 32px;max-width:1400px;margin:0 auto}
+.top-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.ttab{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);transition:all .18s;white-space:nowrap}
+.ttab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ttab:hover:not(.active){border-color:var(--accent);color:var(--text)}
+.ttab.locked-tab{position:relative}
+.ttab.locked-tab::after{content:'🔒';margin-left:6px;font-size:10px}
+.section{display:none}.section.show{display:block}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-top:8px}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);transform:scaleX(0);transition:transform .2s;transform-origin:left}
+.dash-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(79,142,247,.15)}
+.dash-card:hover::before{transform:scaleX(1)}
+.dash-card.c1::before{background:var(--accent)}
+.dash-card.c2::before{background:var(--accent2)}
+.dash-card.c3::before{background:var(--accent3)}
+.dash-card.c4::before{background:var(--accent5)}
+.dash-card .card-icon{font-size:28px;margin-bottom:12px}
+.dash-card h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.dash-card p{font-size:12px;color:var(--text-dim);line-height:1.6}
+.dash-card .card-status{position:absolute;top:14px;right:14px;font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px}
+.dash-card .card-status.ready{background:rgba(79,247,176,.1);border:1px solid var(--accent3);color:var(--accent3)}
+.dash-card .card-status.waiting{background:rgba(247,167,79,.1);border:1px solid var(--accent2);color:var(--accent2)}
+.dash-view{display:none}.dash-view.show{display:block}
+.view-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.back-btn{padding:8px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.view-header h2{font-size:20px;font-weight:700}
+.date-banner{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:10px;padding:10px 16px;margin-bottom:20px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent3);display:none}
+.insights-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px}
+.ins-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ins-hdr h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.ins-tag{font-family:'Space Mono',monospace;font-size:10px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.3);color:var(--accent);padding:2px 10px;border-radius:20px}
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.icard{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid var(--accent)}
+.icard:nth-child(2){border-left-color:var(--accent2)}
+.icard:nth-child(3){border-left-color:var(--accent3)}
+.icard:nth-child(4){border-left-color:var(--accent4)}
+.icard:nth-child(5){border-left-color:var(--accent5)}
+.inum{font-family:'Space Mono',monospace;font-size:10px;color:var(--text-dim);margin-bottom:6px}
+.itext{font-size:12px;font-weight:500;line-height:1.5;color:var(--text)}
+.itext strong{font-weight:700;color:var(--accent)}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px;margin-bottom:24px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.chart-card h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:16px}
+canvas{max-height:280px}
+.mom-table-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px}
+.mom-table-hdr{padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mom-table-hdr h3{font-size:13px;font-weight:600}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--header-h);padding:11px 16px;text-align:right;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);white-space:nowrap;position:sticky;top:0;z-index:2}
+thead th:first-child{text-align:left;min-width:200px}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:hover{background:var(--surface2)}
+tbody td{padding:11px 16px;text-align:right}
+tbody td:first-child{text-align:left;font-weight:500;color:var(--text)}
+tbody tr.row-header td{background:#1a2035;color:var(--accent);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:8px 16px}
+tbody tr.row-sub td{padding-left:32px;color:var(--text-dim);font-size:12px}
+tbody tr.row-sub td:first-child{color:var(--text)}
+tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Space Mono',monospace;font-size:12px;border-top:2px solid var(--border)}
+.val-pos{color:var(--accent3);font-family:'Space Mono',monospace;font-size:12px}
+.val-neg{color:var(--accent4);font-family:'Space Mono',monospace;font-size:12px}
+.val-neu{color:var(--text-dim);font-family:'Space Mono',monospace;font-size:12px}
+.val-num{font-family:'Space Mono',monospace;font-size:12px;color:var(--text)}
+.val-pct{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent2)}
+.uploads-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:700px){.uploads-grid{grid-template-columns:1fr}}
+.uzone{border:2px dashed var(--border);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface);position:relative}
+.uzone:hover,.uzone.drag{border-color:var(--accent);background:#161e2e}
+.uzone.done{border-color:var(--accent3);background:#0d1e18;border-style:solid}
+.uzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uzone .ico{font-size:26px;margin-bottom:8px}
+.uzone h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.uzone p{color:var(--text-dim);font-size:12px;line-height:1.5}
+.fbadge{display:none;margin-top:10px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent3);background:#0d2a1e;border:1px solid var(--accent3);border-radius:6px;padding:4px 12px}
+.sub-tabs{display:flex;gap:8px;margin-bottom:16px}
+.stab{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);transition:all .15s}
+.stab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;border:1px solid var(--border);background:var(--surface)}
+.bar.info{border-color:var(--accent);background:#0d1620;color:var(--accent)}
+.bar.ok{border-color:var(--accent3);background:#0d1e18;color:var(--accent3)}
+.bar.working{border-color:var(--accent2);background:#1e1800;color:var(--accent2)}
+.bar.err{border-color:var(--accent4);background:#2a1020;color:var(--accent4)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btns{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;font-family:'DM Sans',sans-serif}
+.btn-green{background:var(--accent3);color:#001a10}.btn-green:hover{background:#3de0a0}
+.btn-blue{background:var(--accent);color:#fff}.btn-blue:hover{background:#3a7aee}
+.btn-orange{background:var(--accent2);color:#1a1200}.btn-orange:hover{background:#e09540}
+.btn-red{background:var(--accent4);color:#fff}.btn-red:hover{background:#e0304a}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.logbox{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:'Space Mono',monospace;font-size:11px;color:var(--text-dim);max-height:180px;overflow-y:auto;margin-bottom:16px}
+.ll{margin-bottom:3px;line-height:1.6}
+.ll.ok{color:var(--accent3)}.ll.err{color:var(--accent4)}.ll.info{color:var(--accent)}.ll.warn{color:var(--accent2)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px)}
+.modal.show{display:flex}
+.mbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:90%;max-width:380px;text-align:center}
+.mbox h2{font-size:17px;font-weight:700;margin-bottom:6px}
+.mbox p{font-size:12px;color:var(--text-dim);margin-bottom:20px}
+.mbox input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-family:'Space Mono',monospace;margin-bottom:12px;outline:none;letter-spacing:.06em}
+.mbox input:focus{border-color:var(--accent)}
+.mbox input.wrong{border-color:var(--accent4)}
+.pw-err{font-size:12px;color:var(--accent4);margin-bottom:12px;display:none}
+.mbox .mbtn{width:100%;padding:11px;border-radius:8px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--accent);color:#fff}
+.mbox .mbtn:hover{background:#3a7aee}
+.mcancel{margin-top:10px;font-size:12px;color:var(--text-dim);cursor:pointer;display:block}
+.mcancel:hover{color:var(--text)}
+.badge{font-family:'Space Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px;color:var(--text-dim)}
+.no-data{text-align:center;padding:60px 20px;color:var(--text-dim)}
+.no-data .nd-icon{font-size:40px;margin-bottom:12px}
+.no-data p{font-size:13px}
+.prog-wrap{background:var(--surface2);border-radius:6px;height:6px;overflow:hidden;margin-bottom:8px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));width:0%;transition:width .3s}
+.prog-label{font-size:11px;color:var(--text-dim);font-family:'Space Mono',monospace;margin-bottom:12px;text-align:center}
+.export-row{display:flex;justify-content:flex-end;margin-bottom:16px}
+.ts-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:16px}
+@media(max-width:900px){.main{padding:16px}header{padding:12px 16px}.cards-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.cards-grid{grid-template-columns:1fr}.ins-grid{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-
-        // Cloudflare Worker API URL
-        const API_BASE_URL = 'https://ftd-dashboard-backend.anuj-sharma.workers.dev';
-
-        const PASSWORD = "Megha@5678";
-
-        function App() {
-            const [activeTab, setActiveTab] = useState('user-report');
-            const [showPasswordModal, setShowPasswordModal] = useState(false);
-            const [isUploadUnlocked, setIsUploadUnlocked] = useState(false);
-            const [password, setPassword] = useState('');
-            const [passwordError, setPasswordError] = useState('');
-
-            const [mappingFile, setMappingFile] = useState(null);
-            const [cdrFile, setCdrFile] = useState(null);
-            const [productivityFile, setProductivityFile] = useState(null);
-
-            const [mappingData, setMappingData] = useState([]);
-            const [cdrData, setCdrData] = useState([]);
-            const [productivityData, setProductivityData] = useState([]);
-
-            const [reportData, setReportData] = useState([]);
-            const [filteredUserData, setFilteredUserData] = useState([]);
-            const [tlReportData, setTlReportData] = useState([]);
-            const [userFilters, setUserFilters] = useState({});
-            const [columnSorts, setColumnSorts] = useState({});
-            const [lastUpdated, setLastUpdated] = useState('');
-            const [processing, setProcessing] = useState(false);
-            const [error, setError] = useState('');
-            const [statusBar, setStatusBar] = useState({ type: '', message: '' });
-
-            const chartRefs = useRef({});
-            const chartInstances = useRef({});
-            const passwordInputRef = useRef(null);
-
-            const handleUploadClick = (e) => {
-                if (!isUploadUnlocked) {
-                    e.preventDefault();
-                    setShowPasswordModal(true);
-                    setTimeout(() => passwordInputRef.current?.focus(), 100);
-                }
-            };
-
-            const handlePasswordSubmit = () => {
-                if (password === PASSWORD) {
-                    setIsUploadUnlocked(true);
-                    setShowPasswordModal(false);
-                    setPasswordError('');
-                    setPassword('');
-                    setStatusBar({ type: 'ok', message: 'Upload unlocked. You can now select files.' });
-                } else {
-                    setPasswordError('Incorrect password');
-                }
-            };
-
-            // Backend API functions
-            const saveToBackend = async (reportData, tlReportData, lastUpdated) => {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/save-report`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            reportData: reportData,
-                            tlReportData: tlReportData,
-                            lastUpdated: lastUpdated
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    if (result.success) {
-                        console.log('✅ Data saved to cloud storage');
-                    } else {
-                        console.error('❌ Failed to save data:', result.error);
-                    }
-                } catch (error) {
-                    console.error('❌ Error saving to backend:', error);
-                }
-            };
-
-            const loadFromBackend = async () => {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/get-report`);
-                    const result = await response.json();
-                    
-                    if (result.success && result.reportData) {
-                        setReportData(result.reportData);
-                        setFilteredUserData(result.reportData);
-                        setTlReportData(result.tlReportData);
-                        setLastUpdated(result.lastUpdated);
-                        setActiveTab('user-report');
-                        setStatusBar({ type: 'ok', message: 'Loaded previous data from cloud storage' });
-                        console.log('✅ Loaded data from cloud storage');
-                    } else {
-                        console.log('ℹ️ No previous data available');
-                    }
-                } catch (error) {
-                    console.log('ℹ️ No previous data available');
-                }
-            };
-
-            // Load data from backend on page load
-            useEffect(() => {
-                loadFromBackend();
-            }, []);
-
-            const handleFileUpload = (file, setFile, setData) => {
-                if (!file) return;
-                setFile(file);
-                Papa.parse(file, {
-                    complete: (results) => setData(results.data),
-                    header: true,
-                    skipEmptyLines: true,
-                    transformHeader: (h) => h.trim()
-                });
-            };
-
-            const findColumn = (headers, possibleNames) => {
-                const lowerHeaders = headers.map(h => h.toLowerCase().trim());
-                for (let name of possibleNames) {
-                    const idx = lowerHeaders.findIndex(h => h.includes(name.toLowerCase()));
-                    if (idx !== -1) return headers[idx];
-                }
-                return null;
-            };
-
-            const cleanAgentUsername = (username) => {
-                if (!username) return '';
-                return String(username).replace(/_agent$/i, '').trim();
-            };
-
-            const parseTimeToSeconds = (timeStr) => {
-                if (!timeStr) return 0;
-                const parts = String(timeStr).trim().split(':');
-                if (parts.length !== 3) return 0;
-                return (parseInt(parts[0]) || 0) * 3600 + (parseInt(parts[1]) || 0) * 60 + (parseInt(parts[2]) || 0);
-            };
-
-            const secondsToTimeFormat = (seconds) => {
-                const hrs = Math.floor(seconds / 3600);
-                const mins = Math.floor((seconds % 3600) / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            };
-
-            const formatDateTime = () => {
-                const now = new Date();
-                const date = now.toLocaleDateString('en-GB');
-                const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                return `${date} ${time}`;
-            };
-
-            const processData = () => {
-                setProcessing(true);
-                setError('');
-                setStatusBar({ type: 'info', message: 'Processing files...' });
-
-                try {
-                    if (!mappingData.length || !cdrData.length || !productivityData.length) {
-                        setError('Please upload all three files');
-                        setStatusBar({ type: 'err', message: 'Missing files' });
-                        setProcessing(false);
-                        return;
-                    }
-
-                    const mappingHeaders = Object.keys(mappingData[0]);
-                    const cdrHeaders = Object.keys(cdrData[0]);
-                    const productivityHeaders = Object.keys(productivityData[0]);
-
-                    const cdrAgentCol = findColumn(cdrHeaders, ['agent username', 'emp_code', 'username']);
-                    const cdrCallStatusCol = findColumn(cdrHeaders, ['call status']);
-                    const cdrDurationCol = findColumn(cdrHeaders, ['duration']);
-
-                    const prodAgentCol = findColumn(productivityHeaders, ['agent username', 'emp_code', 'username']);
-                    const mappingUserCodeCol = findColumn(mappingHeaders, ['user code', 'emp_code']);
-                    const mappingUnitCol = findColumn(mappingHeaders, ['unit']);
-                    const mappingTLCol = findColumn(mappingHeaders, ['team leader name', 'tl name']);
-                    const mappingUserNameCol = findColumn(mappingHeaders, ['user name', 'name']);
-                    const mappingStatusCol = findColumn(mappingHeaders, ['active status', 'status']);
-                    const mappingDOJCol = findColumn(mappingHeaders, ['doj']);
-
-                    if (!cdrAgentCol || !prodAgentCol || !mappingUserCodeCol) {
-                        setError('Required columns not found');
-                        setStatusBar({ type: 'err', message: 'Column mapping failed' });
-                        setProcessing(false);
-                        return;
-                    }
-
-                    const cdrAggregated = {};
-                    cdrData.forEach(row => {
-                        const agent = cleanAgentUsername(row[cdrAgentCol]);
-                        if (!agent) return;
-
-                        const agentLower = String(agent).toLowerCase();
-                        if (agentLower.includes('agent') || agentLower.includes('username') || agentLower.includes('emp')) return;
-
-                        const callStatus = String(row[cdrCallStatusCol] || '').toLowerCase().trim();
-                        if (callStatus.includes('call status') || callStatus.includes('status')) return;
-
-                        if (!cdrAggregated[agent]) {
-                            cdrAggregated[agent] = { totalDial: 0, totalConnected: 0, totalTalktime: 0 };
-                        }
-
-                        cdrAggregated[agent].totalDial++;
-
-                        if (callStatus === 'connected call') {
-                            cdrAggregated[agent].totalConnected++;
-                        }
-
-                        const durationSeconds = parseTimeToSeconds(row[cdrDurationCol]);
-                        cdrAggregated[agent].totalTalktime += durationSeconds;
-                    });
-
-                    const productivityIndex = {};
-                    productivityData.forEach(row => {
-                        const agent = cleanAgentUsername(row[prodAgentCol]);
-                        if (!agent) return;
-                        
-                        const agentLower = String(agent).toLowerCase();
-                        if (agentLower.includes('agent') || agentLower.includes('username') || agentLower.includes('emp')) return;
-                        
-                        productivityIndex[agent] = row;
-                    });
-
-                    const userReport = mappingData
-                        .filter(mapRow => {
-                            const userCode = String(mapRow[mappingUserCodeCol] || '').trim();
-                            const userCodeLower = userCode.toLowerCase();
-                            if (!userCode || userCodeLower.includes('user') || userCodeLower.includes('code') || userCodeLower.includes('emp')) {
-                                return false;
-                            }
-                            return true;
-                        })
-                        .map(mapRow => {
-                        const userCode = String(mapRow[mappingUserCodeCol] || '').trim();
-                        const cdrInfo = cdrAggregated[userCode] || { totalDial: 0, totalConnected: 0, totalTalktime: 0 };
-                        const prodInfo = productivityIndex[userCode] || {};
-
-                        const totalTalktimeSeconds = Math.round(cdrInfo.totalTalktime);
-                        const status = totalTalktimeSeconds >= 3600 ? 'Above 1 Hr' : 'Below 1 Hr';
-
-                        return {
-                            unit: mapRow[mappingUnitCol] || '',
-                            teamLeaderName: mapRow[mappingTLCol] || '',
-                            userCode: userCode,
-                            userName: mapRow[mappingUserNameCol] || '',
-                            activeStatus: mapRow[mappingStatusCol] || '',
-                            doj: mapRow[mappingDOJCol] || '',
-                            totalDial: cdrInfo.totalDial,
-                            totalConnectedCalls: cdrInfo.totalConnected,
-                            totalTalktimeSeconds: totalTalktimeSeconds,
-                            totalTalktime: secondsToTimeFormat(totalTalktimeSeconds),
-                            status: status,
-                            loginDuration: prodInfo['Login-Duration'] || '0',
-                            netLoginDuration: prodInfo['Net Login Duration'] || '0',
-                            totalBreakTime: prodInfo['Total Break Time'] || '0',
-                            bioBreak: prodInfo['Bio Break'] || '0',
-                            lunchBreak: prodInfo['Lunch Break'] || '0',
-                            tlMeetingBreak: prodInfo['TLMeeting Break'] || '0',
-                            meetingBreak: prodInfo['Meeting Break'] || '0',
-                            otherBreak: prodInfo['Other Break'] || '0',
-                            phoneBreak: prodInfo['Phone Break'] || '0',
-                            processBreak: prodInfo['Process Break'] || '0',
-                            refreshBreak: prodInfo['Refresh Break'] || '0',
-                            teaBreak: prodInfo['Tea Break'] || '0',
-                            xmlBreak: prodInfo['XML Break'] || '0',
-                            totalNonProductiveBreak: prodInfo['Total Non-productive Break Duration'] || '0',
-                            totalProductiveBreak: prodInfo['Total Productive Break Duration'] || '0'
-                        };
-                    });
-
-                    const tlAggregated = {};
-                    userReport.forEach(row => {
-                        const key = `${row.unit}|${row.teamLeaderName}`;
-                        if (!tlAggregated[key]) {
-                            tlAggregated[key] = {
-                                unit: row.unit,
-                                tlName: row.teamLeaderName,
-                                userCount: 0,
-                                totalDial: 0,
-                                totalConnected: 0,
-                                totalTT: 0
-                            };
-                        }
-                        tlAggregated[key].userCount++;
-                        tlAggregated[key].totalDial += row.totalDial;
-                        tlAggregated[key].totalConnected += row.totalConnectedCalls;
-                        tlAggregated[key].totalTT += row.totalTalktimeSeconds;
-                    });
-
-                    const tlReport = Object.values(tlAggregated).map(tl => ({
-                        ...tl,
-                        avgDial: (tl.totalDial / tl.userCount).toFixed(1),
-                        avgConn: (tl.totalConnected / tl.userCount).toFixed(1),
-                        avgTT: secondsToTimeFormat(Math.round(tl.totalTT / tl.userCount)),
-                        totalTTFormatted: secondsToTimeFormat(tl.totalTT)
-                    }));
-
-                    setReportData(userReport);
-                    setFilteredUserData(userReport);
-                    setTlReportData(tlReport);
-                    setUserFilters({});
-                    setColumnSorts({});
-                    const timestamp = formatDateTime();
-                    setLastUpdated(timestamp);
-                    setStatusBar({ type: 'ok', message: `Processed ${userReport.length} agents successfully` });
-                    setActiveTab('user-report');
-                    setProcessing(false);
-
-                    // Save to backend
-                    saveToBackend(userReport, tlReport, timestamp);
-                } catch (err) {
-                    setError(`Error: ${err.message}`);
-                    setStatusBar({ type: 'err', message: err.message });
-                    setProcessing(false);
-                }
-            };
-
-            const applyFiltersAndSort = () => {
-                let filtered = reportData;
-                
-                Object.keys(userFilters).forEach(col => {
-                    const val = userFilters[col];
-                    if (val && val !== 'All') {
-                        filtered = filtered.filter(row => String(row[col]) === val);
-                    }
-                });
-
-                Object.keys(columnSorts).forEach(col => {
-                    const order = columnSorts[col];
-                    if (order && order !== 'All') {
-                        filtered = [...filtered].sort((a, b) => {
-                            let aVal = a[col];
-                            let bVal = b[col];
-
-                            // Handle numeric fields
-                            if (col === 'totalDial' || col === 'totalConnectedCalls' || col === 'totalTalktimeSeconds') {
-                                aVal = Number(aVal) || 0;
-                                bVal = Number(bVal) || 0;
-                            }
-                            // Handle time fields (HH:MM:SS format)
-                            else if (col.includes('Break') || col.includes('Duration') || col === 'loginDuration' || col === 'netLoginDuration' || col === 'totalBreakTime') {
-                                aVal = parseTimeToSeconds(aVal);
-                                bVal = parseTimeToSeconds(bVal);
-                            }
-
-                            if (order === 'Low to High') {
-                                return aVal > bVal ? 1 : -1;
-                            } else {
-                                return aVal < bVal ? 1 : -1;
-                            }
-                        });
-                    }
-                });
-
-                setFilteredUserData(filtered);
-            };
-
-            useEffect(() => {
-                if (reportData.length) applyFiltersAndSort();
-            }, [userFilters, columnSorts, reportData]);
-
-            const getUniqueValues = (data, field) => {
-                return ['All', ...new Set(data.map(r => r[field]).filter(Boolean))];
-            };
-
-            const exportToCSV = (data, filename) => {
-                const headers = Object.keys(data[0]);
-                const csv = [headers.join(','), ...data.map(r => headers.map(h => r[h]).join(','))].join('\n');
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                a.click();
-            };
-
-            const destroyChart = (id) => {
-                if (chartInstances.current[id]) {
-                    chartInstances.current[id].destroy();
-                    chartInstances.current[id] = null;
-                }
-            };
-
-            const renderUserCharts = () => {
-                destroyChart('userStatus');
-
-                if (chartRefs.current.userStatus) {
-                    const ctx = chartRefs.current.userStatus.getContext('2d');
-                    const above = filteredUserData.filter(r => r.status === 'Above 1 Hr').length;
-                    const below = filteredUserData.filter(r => r.status === 'Below 1 Hr').length;
-
-                    chartInstances.current.userStatus = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Above 1 Hr', 'Below 1 Hr'],
-                            datasets: [{
-                                data: [above, below],
-                                backgroundColor: ['rgba(79,247,176,0.85)', 'rgba(247,79,122,0.85)'],
-                                borderColor: '#161922',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: { 
-                                    position: 'bottom', 
-                                    labels: { 
-                                        color: '#e8ecf5',
-                                        font: { size: 10 },
-                                        padding: 8
-                                    } 
-                                }
-                            }
-                        }
-                    });
-                }
-            };
-
-            const renderTLCharts = () => {
-                destroyChart('tlUnit');
-
-                if (chartRefs.current.tlUnit) {
-                    const ctx = chartRefs.current.tlUnit.getContext('2d');
-                    const units = [...new Set(tlReportData.map(r => r.unit))];
-                    const unitData = units.map(u => tlReportData.filter(r => r.unit === u).reduce((sum, t) => sum + t.totalTT, 0));
-
-                    chartInstances.current.tlUnit = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: units,
-                            datasets: [{
-                                label: 'Talktime (hrs)',
-                                data: unitData.map(d => (d / 3600).toFixed(2)),
-                                backgroundColor: 'rgba(79,142,247,0.85)',
-                                borderRadius: 4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: { 
-                                    beginAtZero: true, 
-                                    ticks: { color: '#8892a4', font: { size: 9 } }, 
-                                    grid: { color: '#2a3045' } 
-                                },
-                                x: { 
-                                    ticks: { color: '#8892a4', font: { size: 9 } }, 
-                                    grid: { display: false } 
-                                }
-                            },
-                            plugins: {
-                                legend: { 
-                                    display: false
-                                }
-                            }
-                        }
-                    });
-                }
-            };
-
-            useEffect(() => {
-                if (activeTab === 'user-report' && filteredUserData.length) {
-                    setTimeout(renderUserCharts, 100);
-                }
-            }, [activeTab, filteredUserData]);
-
-            useEffect(() => {
-                if (activeTab === 'tl-report' && tlReportData.length) {
-                    setTimeout(renderTLCharts, 100);
-                }
-            }, [activeTab, tlReportData]);
-
-            return (
-                <>
-                    <header>
-                        <div className="logo">MOTILAL</div>
-                        <div className="page-title">FTD Talk Time Dashboard</div>
-                        <div className="org-name">Megha</div>
-                    </header>
-
-                    <div className="main">
-                        <div className="top-tabs-row">
-                            <div className="top-tabs">
-                                <button className={`tab ${activeTab === 'user-report' ? 'active' : ''}`} onClick={() => setActiveTab('user-report')} disabled={!reportData.length}>
-                                    👤 User-Wise Report
-                                </button>
-                                <button className={`tab ${activeTab === 'tl-report' ? 'active' : ''}`} onClick={() => setActiveTab('tl-report')} disabled={!tlReportData.length}>
-                                    👥 TL-Wise Report
-                                </button>
-                                <button className={`tab ${activeTab === 'upload' ? 'active' : ''}`} onClick={() => setActiveTab('upload')}>
-                                    📂 Upload Files
-                                </button>
-                            </div>
-                            {lastUpdated && (
-                                <div className="last-updated">
-                                    Last Updated: {lastUpdated}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* UPLOAD SECTION */}
-                        <div className={`section ${activeTab === 'upload' ? 'active' : ''}`}>
-                            {statusBar.message && (
-                                <div className={`bar ${statusBar.type}`}>{statusBar.message}</div>
-                            )}
-
-                            {!isUploadUnlocked && (
-                                <div className="bar info">
-                                    🔒 Click any upload zone to unlock with password
-                                </div>
-                            )}
-                            
-                            <div className="upload-grid">
-                                <div className={`upload-zone ${mappingFile ? 'done' : ''}`}>
-                                    <h3>📋 Mapping File</h3>
-                                    <p>Unit, TL Name, User Code, User Name, Status, DOJ</p>
-                                    <label className="upload-label" onClick={handleUploadClick}>
-                                        Choose File
-                                        {isUploadUnlocked && (
-                                            <input type="file" className="file-input" accept=".csv" onChange={(e) => handleFileUpload(e.target.files[0], setMappingFile, setMappingData)} />
-                                        )}
-                                    </label>
-                                    {mappingFile && <div className="file-badge">✓ {mappingFile.name}</div>}
-                                </div>
-
-                                <div className={`upload-zone ${cdrFile ? 'done' : ''}`}>
-                                    <h3>📞 CDR Raw</h3>
-                                    <p>Call records with Duration, Call Status, Agent Username</p>
-                                    <label className="upload-label" onClick={handleUploadClick}>
-                                        Choose File
-                                        {isUploadUnlocked && (
-                                            <input type="file" className="file-input" accept=".csv" onChange={(e) => handleFileUpload(e.target.files[0], setCdrFile, setCdrData)} />
-                                        )}
-                                    </label>
-                                    {cdrFile && <div className="file-badge">✓ {cdrFile.name}</div>}
-                                </div>
-
-                                <div className={`upload-zone ${productivityFile ? 'done' : ''}`}>
-                                    <h3>⏱️ Break Report</h3>
-                                    <p>Login duration, breaks, productivity metrics</p>
-                                    <label className="upload-label" onClick={handleUploadClick}>
-                                        Choose File
-                                        {isUploadUnlocked && (
-                                            <input type="file" className="file-input" accept=".csv" onChange={(e) => handleFileUpload(e.target.files[0], setProductivityFile, setProductivityData)} />
-                                        )}
-                                    </label>
-                                    {productivityFile && <div className="file-badge">✓ {productivityFile.name}</div>}
-                                </div>
-                            </div>
-
-                            <button className="btn btn-green" onClick={processData} disabled={!mappingFile || !cdrFile || !productivityFile || processing}>
-                                {processing ? '⏳ Processing...' : '⚡ Generate Reports'}
-                            </button>
-                        </div>
-
-                        {/* USER REPORT SECTION */}
-                        <div className={`section ${activeTab === 'user-report' ? 'active' : ''}`}>
-                            {reportData.length > 0 && (
-                                <>
-                                    <div className="insights-grid">
-                                        <div className="insight-card">
-                                            <h4>Total Agents</h4>
-                                            <div className="value">{filteredUserData.length.toLocaleString()}</div>
-                                            <div className="label">Active users</div>
-                                        </div>
-                                        <div className="insight-card green">
-                                            <h4>Connected Calls</h4>
-                                            <div className="value">{filteredUserData.reduce((s, r) => s + r.totalConnectedCalls, 0).toLocaleString()}</div>
-                                            <div className="label">Successful connections</div>
-                                        </div>
-                                        <div className="insight-card orange">
-                                            <h4>Total Dial</h4>
-                                            <div className="value">{filteredUserData.reduce((s, r) => s + r.totalDial, 0).toLocaleString()}</div>
-                                            <div className="label">All call attempts</div>
-                                        </div>
-                                        <div className="insight-card">
-                                            <h4>Connection Rate</h4>
-                                            <div className="value" style={{fontSize: '28px'}}>
-                                                {((filteredUserData.reduce((s, r) => s + r.totalConnectedCalls, 0) / filteredUserData.reduce((s, r) => s + r.totalDial, 0)) * 100).toFixed(1)}%
-                                            </div>
-                                            <div className="label">Success rate</div>
-                                        </div>
-                                        <div className="insight-card red">
-                                            <h4>Below Target</h4>
-                                            <div className="value">{filteredUserData.filter(r => r.status === 'Below 1 Hr').length.toLocaleString()}</div>
-                                            <div className="label">Need support</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="performance-grid">
-                                        <div className="perf-card chart">
-                                            <h4>📊 Status Split</h4>
-                                            <div className="chart-container">
-                                                <canvas ref={el => chartRefs.current.userStatus = el}></canvas>
-                                            </div>
-                                        </div>
-
-                                        <div className="perf-card top">
-                                            <h4>🏆 Top 5 Performers</h4>
-                                            <div className="list-container">
-                                                {[...filteredUserData].sort((a, b) => b.totalTalktimeSeconds - a.totalTalktimeSeconds).slice(0, 5).map((agent, idx) => (
-                                                    <div key={idx} className="performer-item top">
-                                                        <div>
-                                                            <div style={{fontSize: '12px', fontWeight: '600', color: 'var(--text)', fontFamily: 'DM Sans'}}>{agent.userName || agent.userCode}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'DM Sans'}}>{agent.teamLeaderName}</div>
-                                                        </div>
-                                                        <div style={{fontSize: '12px', fontWeight: '700', color: 'var(--accent3)', fontFamily: 'Space Mono'}}>{agent.totalTalktime}</div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="perf-card bottom">
-                                            <h4>⚠️ Bottom 5 Performers</h4>
-                                            <div className="list-container">
-                                                {[...filteredUserData].sort((a, b) => a.totalTalktimeSeconds - b.totalTalktimeSeconds).slice(0, 5).map((agent, idx) => (
-                                                    <div key={idx} className="performer-item bottom">
-                                                        <div>
-                                                            <div style={{fontSize: '12px', fontWeight: '600', color: 'var(--text)', fontFamily: 'DM Sans'}}>{agent.userName || agent.userCode}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'DM Sans'}}>{agent.teamLeaderName}</div>
-                                                        </div>
-                                                        <div style={{fontSize: '12px', fontWeight: '700', color: 'var(--accent4)', fontFamily: 'Space Mono'}}>{agent.totalTalktime}</div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="table-section">
-                                        <div className="table-header">
-                                            <h3>📌 Detailed User Report ({filteredUserData.length} agents)</h3>
-                                            <button className="btn btn-orange" onClick={() => exportToCSV(filteredUserData, 'User_Report.csv')}>⬇ Export</button>
-                                        </div>
-                                        <div className="tscroll">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Unit</span>
-                                                                <select className="column-filter" value={userFilters.unit || 'All'} onChange={(e) => setUserFilters({...userFilters, unit: e.target.value})}>
-                                                                    {getUniqueValues(reportData, 'unit').map(v => <option key={v}>{v}</option>)}
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Team Leader</span>
-                                                                <select className="column-filter" value={userFilters.teamLeaderName || 'All'} onChange={(e) => setUserFilters({...userFilters, teamLeaderName: e.target.value})}>
-                                                                    {getUniqueValues(reportData, 'teamLeaderName').map(v => <option key={v}>{v}</option>)}
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">User Code</span>
-                                                                <select className="column-filter" value={userFilters.userCode || 'All'} onChange={(e) => setUserFilters({...userFilters, userCode: e.target.value})}>
-                                                                    {getUniqueValues(reportData, 'userCode').map(v => <option key={v}>{v}</option>)}
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">User Name</span>
-                                                                <select className="column-filter" value={userFilters.userName || 'All'} onChange={(e) => setUserFilters({...userFilters, userName: e.target.value})}>
-                                                                    {getUniqueValues(reportData, 'userName').map(v => <option key={v}>{v}</option>)}
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th><div className="th-content"><span className="th-label">Active Status</span></div></th>
-                                                        <th><div className="th-content"><span className="th-label">DOJ</span></div></th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Total Dial</span>
-                                                                <select className="column-sort" value={columnSorts.totalDial || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalDial: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Connected</span>
-                                                                <select className="column-sort" value={columnSorts.totalConnectedCalls || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalConnectedCalls: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Total Talktime</span>
-                                                                <select className="column-sort" value={columnSorts.totalTalktimeSeconds || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalTalktimeSeconds: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Status</span>
-                                                                <select className="column-filter" value={userFilters.status || 'All'} onChange={(e) => setUserFilters({...userFilters, status: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Above 1 Hr</option>
-                                                                    <option>Below 1 Hr</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Login</span>
-                                                                <select className="column-sort" value={columnSorts.loginDuration || 'All'} onChange={(e) => setColumnSorts({...columnSorts, loginDuration: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Net Login</span>
-                                                                <select className="column-sort" value={columnSorts.netLoginDuration || 'All'} onChange={(e) => setColumnSorts({...columnSorts, netLoginDuration: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Total Break</span>
-                                                                <select className="column-sort" value={columnSorts.totalBreakTime || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalBreakTime: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Bio</span>
-                                                                <select className="column-sort" value={columnSorts.bioBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, bioBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Lunch</span>
-                                                                <select className="column-sort" value={columnSorts.lunchBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, lunchBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">TL Meet</span>
-                                                                <select className="column-sort" value={columnSorts.tlMeetingBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, tlMeetingBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Meeting</span>
-                                                                <select className="column-sort" value={columnSorts.meetingBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, meetingBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Other</span>
-                                                                <select className="column-sort" value={columnSorts.otherBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, otherBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Phone</span>
-                                                                <select className="column-sort" value={columnSorts.phoneBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, phoneBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Process</span>
-                                                                <select className="column-sort" value={columnSorts.processBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, processBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Refresh</span>
-                                                                <select className="column-sort" value={columnSorts.refreshBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, refreshBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Tea</span>
-                                                                <select className="column-sort" value={columnSorts.teaBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, teaBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">XML</span>
-                                                                <select className="column-sort" value={columnSorts.xmlBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, xmlBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Non-Prod</span>
-                                                                <select className="column-sort" value={columnSorts.totalNonProductiveBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalNonProductiveBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                        <th>
-                                                            <div className="th-content">
-                                                                <span className="th-label">Productive</span>
-                                                                <select className="column-sort" value={columnSorts.totalProductiveBreak || 'All'} onChange={(e) => setColumnSorts({...columnSorts, totalProductiveBreak: e.target.value})}>
-                                                                    <option>All</option>
-                                                                    <option>Low to High</option>
-                                                                    <option>High to Low</option>
-                                                                </select>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {filteredUserData.map((row, i) => (
-                                                        <tr key={i}>
-                                                            <td>{row.unit}</td>
-                                                            <td>{row.teamLeaderName}</td>
-                                                            <td className="val-num">{row.userCode}</td>
-                                                            <td>{row.userName}</td>
-                                                            <td>{row.activeStatus}</td>
-                                                            <td>{row.doj}</td>
-                                                            <td className="val-num">{row.totalDial.toLocaleString()}</td>
-                                                            <td className="val-num">{row.totalConnectedCalls.toLocaleString()}</td>
-                                                            <td>{row.totalTalktime}</td>
-                                                            <td><span className={`status-badge ${row.status === 'Above 1 Hr' ? 'status-above' : 'status-below'}`}>{row.status}</span></td>
-                                                            <td>{row.loginDuration}</td>
-                                                            <td>{row.netLoginDuration}</td>
-                                                            <td>{row.totalBreakTime}</td>
-                                                            <td>{row.bioBreak}</td>
-                                                            <td>{row.lunchBreak}</td>
-                                                            <td>{row.tlMeetingBreak}</td>
-                                                            <td>{row.meetingBreak}</td>
-                                                            <td>{row.otherBreak}</td>
-                                                            <td>{row.phoneBreak}</td>
-                                                            <td>{row.processBreak}</td>
-                                                            <td>{row.refreshBreak}</td>
-                                                            <td>{row.teaBreak}</td>
-                                                            <td>{row.xmlBreak}</td>
-                                                            <td>{row.totalNonProductiveBreak}</td>
-                                                            <td>{row.totalProductiveBreak}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-
-                        {/* TL REPORT SECTION */}
-                        <div className={`section ${activeTab === 'tl-report' ? 'active' : ''}`}>
-                            {tlReportData.length > 0 && (
-                                <>
-                                    <div className="insights-grid">
-                                        <div className="insight-card green">
-                                            <h4>Best TL (Avg TT)</h4>
-                                            <div className="value" style={{fontSize: '18px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => {
-                                                        const aAvg = a.totalTT / a.userCount;
-                                                        const bAvg = b.totalTT / b.userCount;
-                                                        return bAvg - aAvg;
-                                                    })[0];
-                                                    return best ? best.tlName : '-';
-                                                })()}
-                                            </div>
-                                            <div className="label">Highest per-agent avg</div>
-                                        </div>
-                                        <div className="insight-card">
-                                            <h4>Connection Leader</h4>
-                                            <div className="value" style={{fontSize: '22px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => {
-                                                        const aRate = (a.totalConnected / a.totalDial) * 100;
-                                                        const bRate = (b.totalConnected / b.totalDial) * 100;
-                                                        return bRate - aRate;
-                                                    })[0];
-                                                    return best ? ((best.totalConnected / best.totalDial) * 100).toFixed(1) + '%' : '-';
-                                                })()}
-                                            </div>
-                                            <div className="label" style={{fontSize: '11px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => {
-                                                        const aRate = (a.totalConnected / a.totalDial) * 100;
-                                                        const bRate = (b.totalConnected / b.totalDial) * 100;
-                                                        return bRate - aRate;
-                                                    })[0];
-                                                    return best ? best.tlName : '';
-                                                })()}
-                                            </div>
-                                        </div>
-                                        <div className="insight-card orange">
-                                            <h4>Most Active TL</h4>
-                                            <div className="value" style={{fontSize: '22px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => b.totalDial - a.totalDial)[0];
-                                                    return best ? best.totalDial.toLocaleString() : '-';
-                                                })()}
-                                            </div>
-                                            <div className="label" style={{fontSize: '11px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => b.totalDial - a.totalDial)[0];
-                                                    return best ? best.tlName : '';
-                                                })()}
-                                            </div>
-                                        </div>
-                                        <div className="insight-card">
-                                            <h4>Largest Team</h4>
-                                            <div className="value" style={{fontSize: '28px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => b.userCount - a.userCount)[0];
-                                                    return best ? best.userCount : '-';
-                                                })()}
-                                            </div>
-                                            <div className="label" style={{fontSize: '11px'}}>
-                                                {(() => {
-                                                    const best = [...tlReportData].sort((a, b) => b.userCount - a.userCount)[0];
-                                                    return best ? best.tlName : '';
-                                                })()}
-                                            </div>
-                                        </div>
-                                        <div className="insight-card red">
-                                            <h4>Overall Avg TT</h4>
-                                            <div className="value" style={{fontSize: '20px'}}>
-                                                {secondsToTimeFormat(Math.round(tlReportData.reduce((s, r) => s + r.totalTT, 0) / tlReportData.reduce((s, r) => s + r.userCount, 0)))}
-                                            </div>
-                                            <div className="label">Per agent across TLs</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Single Row Layout: Chart + 2 Summary Cards */}
-                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '24px'}}>
-                                        {/* Left: Compact Bar Chart */}
-                                        <div className="chart-card" style={{padding: '20px'}}>
-                                            <h4 style={{fontSize: '13px', marginBottom: '16px'}}>📊 Unit-wise Talktime Distribution</h4>
-                                            <div style={{height: '200px'}}>
-                                                <canvas ref={el => chartRefs.current.tlUnit = el}></canvas>
-                                            </div>
-                                        </div>
-
-                                        {/* Middle: Performance Metrics */}
-                                        <div className="insight-card" style={{padding: '20px', borderLeft: '4px solid var(--accent3)'}}>
-                                            <h4 style={{marginBottom: '20px', fontSize: '11px'}}>📈 PERFORMANCE METRICS</h4>
-                                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '8px'}}>Avg Calls/Agent/TL</div>
-                                                    <div style={{fontSize: '28px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--text)'}}>
-                                                        {(tlReportData.reduce((s, r) => s + r.totalDial, 0) / tlReportData.reduce((s, r) => s + r.userCount, 0)).toFixed(0)}
-                                                    </div>
-                                                    <div style={{fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px'}}>Overall efficiency</div>
-                                                </div>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '8px'}}>Overall Conn Rate</div>
-                                                    <div style={{fontSize: '28px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--accent3)'}}>
-                                                        {((tlReportData.reduce((s, r) => s + r.totalConnected, 0) / tlReportData.reduce((s, r) => s + r.totalDial, 0)) * 100).toFixed(1)}%
-                                                    </div>
-                                                    <div style={{fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px'}}>Team performance</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Right: Key Insights */}
-                                        <div className="insight-card" style={{padding: '20px', borderLeft: '4px solid var(--accent2)'}}>
-                                            <h4 style={{marginBottom: '20px', fontSize: '11px'}}>📌 KEY INSIGHTS</h4>
-                                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '6px'}}>Team Size Variance</div>
-                                                    <div style={{fontSize: '20px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--text)'}}>
-                                                        {(() => {
-                                                            const sizes = tlReportData.map(r => r.userCount);
-                                                            const min = Math.min(...sizes);
-                                                            const max = Math.max(...sizes);
-                                                            return `${min} - ${max}`;
-                                                        })()}
-                                                    </div>
-                                                    <div style={{fontSize: '10px', color: 'var(--text-dim)', marginTop: '2px'}}>Min to Max</div>
-                                                </div>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '6px'}}>Total Connected</div>
-                                                    <div style={{fontSize: '20px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--text)'}}>
-                                                        {tlReportData.reduce((s, r) => s + r.totalConnected, 0).toLocaleString()}
-                                                    </div>
-                                                    <div style={{fontSize: '10px', color: 'var(--text-dim)', marginTop: '2px'}}>All teams</div>
-                                                </div>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '6px'}}>Weakest Conn %</div>
-                                                    <div style={{fontSize: '20px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--accent4)'}}>
-                                                        {(() => {
-                                                            const worst = [...tlReportData].sort((a, b) => {
-                                                                const aRate = (a.totalConnected / a.totalDial) * 100;
-                                                                const bRate = (b.totalConnected / b.totalDial) * 100;
-                                                                return aRate - bRate;
-                                                            })[0];
-                                                            return worst ? ((worst.totalConnected / worst.totalDial) * 100).toFixed(1) + '%' : '-';
-                                                        })()}
-                                                    </div>
-                                                    <div style={{fontSize: '10px', color: 'var(--text-dim)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
-                                                        {(() => {
-                                                            const worst = [...tlReportData].sort((a, b) => {
-                                                                const aRate = (a.totalConnected / a.totalDial) * 100;
-                                                                const bRate = (b.totalConnected / b.totalDial) * 100;
-                                                                return aRate - bRate;
-                                                            })[0];
-                                                            return worst ? worst.tlName : '';
-                                                        })()}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div style={{fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-dim)', marginBottom: '6px'}}>Total TL Count</div>
-                                                    <div style={{fontSize: '20px', fontWeight: '700', fontFamily: 'Space Mono', color: 'var(--text)'}}>
-                                                        {tlReportData.length}
-                                                    </div>
-                                                    <div style={{fontSize: '10px', color: 'var(--text-dim)', marginTop: '2px'}}>Active leaders</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Top 5 and Bottom 5 TLs - SEPARATE SECTION */}
-                                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px'}}>
-                                        <div className="insight-card green" style={{padding: '20px'}}>
-                                            <h4 style={{marginBottom: '16px'}}>🏆 Top 5 TLs by Talktime</h4>
-                                            <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                                                {[...tlReportData].sort((a, b) => b.totalTT - a.totalTT).slice(0, 5).map((tl, idx) => (
-                                                    <div key={idx} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'rgba(79,247,176,0.1)', borderRadius: '6px'}}>
-                                                        <div>
-                                                            <div style={{fontSize: '13px', fontWeight: '600', color: 'var(--text)', fontFamily: 'DM Sans'}}>{tl.tlName}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'DM Sans'}}>{tl.unit} • {tl.userCount} agents</div>
-                                                        </div>
-                                                        <div style={{textAlign: 'right'}}>
-                                                            <div style={{fontSize: '13px', fontWeight: '700', color: 'var(--accent3)', fontFamily: 'Space Mono'}}>{tl.totalTTFormatted}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'Space Mono'}}>{tl.avgTT} avg</div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="insight-card red" style={{padding: '20px'}}>
-                                            <h4 style={{marginBottom: '16px'}}>⚠️ Bottom 5 TLs by Talktime</h4>
-                                            <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                                                {[...tlReportData].sort((a, b) => a.totalTT - b.totalTT).slice(0, 5).map((tl, idx) => (
-                                                    <div key={idx} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'rgba(247,79,122,0.1)', borderRadius: '6px'}}>
-                                                        <div>
-                                                            <div style={{fontSize: '13px', fontWeight: '600', color: 'var(--text)', fontFamily: 'DM Sans'}}>{tl.tlName}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'DM Sans'}}>{tl.unit} • {tl.userCount} agents</div>
-                                                        </div>
-                                                        <div style={{textAlign: 'right'}}>
-                                                            <div style={{fontSize: '13px', fontWeight: '700', color: 'var(--accent4)', fontFamily: 'Space Mono'}}>{tl.totalTTFormatted}</div>
-                                                            <div style={{fontSize: '10px', color: 'var(--text-dim)', fontFamily: 'Space Mono'}}>{tl.avgTT} avg</div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {[...new Set(tlReportData.map(r => r.unit))].map(unit => (
-                                        <div key={unit} className="unit-section">
-                                            <div className="unit-header">📍 {unit}</div>
-                                            <div className="unit-table">
-                                                <div className="tscroll">
-                                                    <table>
-                                                        <thead>
-                                                            <tr>
-                                                                <th><div className="th-content"><span className="th-label">TL Name</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">User Count</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Total Dial</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Total Connected</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Conn %</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Total TT</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Avg Dial</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Avg Conn</span></div></th>
-                                                                <th><div className="th-content"><span className="th-label">Avg TT</span></div></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {tlReportData.filter(r => r.unit === unit).map((row, i) => (
-                                                                <tr key={i}>
-                                                                    <td>{row.tlName}</td>
-                                                                    <td className="val-num">{row.userCount}</td>
-                                                                    <td className="val-num">{row.totalDial.toLocaleString()}</td>
-                                                                    <td className="val-num">{row.totalConnected.toLocaleString()}</td>
-                                                                    <td className="val-pct">{((row.totalConnected / row.totalDial) * 100).toFixed(1)}%</td>
-                                                                    <td>{row.totalTTFormatted}</td>
-                                                                    <td className="val-pct">{row.avgDial}</td>
-                                                                    <td className="val-pct">{row.avgConn}</td>
-                                                                    <td>{row.avgTT}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className={`modal-overlay ${showPasswordModal ? 'show' : ''}`} onClick={() => setShowPasswordModal(false)}>
-                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                            <h2>🔒 Enter Password</h2>
-                            <input
-                                ref={passwordInputRef}
-                                type="password"
-                                className={passwordError ? 'error' : ''}
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit()}
-                            />
-                            {passwordError && <div className="alert alert-error">{passwordError}</div>}
-                            <button className="btn btn-blue" onClick={handlePasswordSubmit}>Unlock</button>
-                        </div>
-                    </div>
-                </>
-            );
+
+<header>
+  <div class="logo">DAD <span>///</span> MOM Analytics</div>
+  <h1>📊 FT Month-over-Month Dashboard</h1>
+  <div class="logo" style="color:var(--text-dim)">Motilal Oswal</div>
+</header>
+
+<!-- PW MODAL -->
+<div class="modal" id="pwModal">
+  <div class="mbox">
+    <div style="font-size:32px;margin-bottom:10px">🔒</div>
+    <h2>Admin Access</h2>
+    <p>Enter password to access the upload panel</p>
+    <input type="password" id="pwInp" placeholder="Enter password..." onkeydown="if(event.key==='Enter')checkPW()"/>
+    <div class="pw-err" id="pwErr">❌ Incorrect password. Try again.</div>
+    <button class="mbtn" onclick="checkPW()">Unlock</button>
+    <span class="mcancel" onclick="closePW()">Cancel</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="top-tabs">
+    <div class="ttab active" id="ttab-home" onclick="showTopTab('home')">🏠 Home</div>
+    <div class="ttab" id="ttab-d1" onclick="openDash('d1')">📋 D1 — Leads Funnel</div>
+    <div class="ttab" id="ttab-d2" onclick="openDash('d2')">🔄 D2 — Disposed</div>
+    <div class="ttab" id="ttab-d3" onclick="openDash('d3')">🎯 D3 — DIY vs Non-DIY</div>
+    <div class="ttab" id="ttab-d4" onclick="openDash('d4')">💰 D4 — Volume Bucket</div>
+    <div class="ttab locked-tab" id="ttab-admin" onclick="askPW()">Admin Upload</div>
+  </div>
+
+  <!-- HOME -->
+  <div class="section show" id="sec-home">
+    <div class="bar info" id="homeBar"><span class="spin"></span> Loading data...</div>
+    <div class="ts-label" id="homeTS" style="display:none"></div>
+    <div class="cards-grid">
+      <div class="dash-card c1" onclick="openDash('d1')">
+        <div class="card-status waiting" id="cardStatus-d1">No Data</div>
+        <div class="card-icon">📋</div>
+        <h3>Dashboard 1 — Leads Funnel</h3>
+        <p>Leads → A/C Open → Conv% → FT Done → DIY & Non-DIY breakdown with MOM comparison</p>
+      </div>
+      <div class="dash-card c2" onclick="openDash('d2')">
+        <div class="card-status waiting" id="cardStatus-d2">No Data</div>
+        <div class="card-icon">🔄</div>
+        <h3>Dashboard 2 — Disposed Analysis</h3>
+        <p>Leads → Disposed vs Non-Disposed with percentage breakdown and MOM comparison</p>
+      </div>
+      <div class="dash-card c3" onclick="openDash('d3')">
+        <div class="card-status waiting" id="cardStatus-d3">No Data</div>
+        <div class="card-icon">🎯</div>
+        <h3>Dashboard 3 — DIY vs Non-DIY</h3>
+        <p>Accounts split by DIY/Non-DIY with FT Done count and percentage MOM comparison</p>
+      </div>
+      <div class="dash-card" style="--accent:var(--accent5)" onclick="openDash('d4')">
+        <div class="card-status waiting" id="cardStatus-d4">No Data</div>
+        <div class="card-icon">💰</div>
+        <h3>Dashboard 4 — Volume Bucket</h3>
+        <p>First trade volume distribution across 18 brackets with MOM comparison</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- D1 -->
+  <div class="section" id="sec-d1">
+    <div class="view-header">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>📋 Dashboard 1 — Leads Funnel MOM</h2>
+    </div>
+    <div class="date-banner" id="d1-date-banner"></div>
+    <div id="d1-insights" class="insights-box" style="display:none">
+      <div class="ins-hdr"><h3>📌 Key Insights</h3><div class="ins-tag">Auto-generated</div></div>
+      <div class="ins-grid" id="d1-ins-grid"></div>
+    </div>
+    <div id="d1-charts"></div>
+    <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d1')">⬇ Export to Excel</button></div>
+    <div class="mom-table-card">
+      <div class="mom-table-hdr"><h3>Leads Funnel — Month-over-Month</h3><div class="badge" id="d1-badge"></div></div>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Particular</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+          <tbody id="d1-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="no-data" id="d1-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
+  </div>
+
+  <!-- D2 -->
+  <div class="section" id="sec-d2">
+    <div class="view-header">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>🔄 Dashboard 2 — Disposed Analysis MOM</h2>
+    </div>
+    <div class="date-banner" id="d2-date-banner"></div>
+    <div id="d2-insights" class="insights-box" style="display:none">
+      <div class="ins-hdr"><h3>📌 Key Insights</h3><div class="ins-tag">Auto-generated</div></div>
+      <div class="ins-grid" id="d2-ins-grid"></div>
+    </div>
+    <div id="d2-charts"></div>
+    <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d2')">⬇ Export to Excel</button></div>
+    <div class="mom-table-card">
+      <div class="mom-table-hdr"><h3>Disposed Analysis — Month-over-Month</h3><div class="badge" id="d2-badge"></div></div>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Particular</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+          <tbody id="d2-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="no-data" id="d2-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
+  </div>
+
+  <!-- D3 -->
+  <div class="section" id="sec-d3">
+    <div class="view-header">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>🎯 Dashboard 3 — DIY vs Non-DIY MOM</h2>
+    </div>
+    <div class="date-banner" id="d3-date-banner"></div>
+    <div id="d3-insights" class="insights-box" style="display:none">
+      <div class="ins-hdr"><h3>📌 Key Insights</h3><div class="ins-tag">Auto-generated</div></div>
+      <div class="ins-grid" id="d3-ins-grid"></div>
+    </div>
+    <div id="d3-charts"></div>
+    <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d3')">⬇ Export to Excel</button></div>
+    <div class="mom-table-card">
+      <div class="mom-table-hdr"><h3>DIY vs Non-DIY — Month-over-Month</h3><div class="badge" id="d3-badge"></div></div>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Particular</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+          <tbody id="d3-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="no-data" id="d3-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
+  </div>
+
+  <!-- D4 -->
+  <div class="section" id="sec-d4">
+    <div class="view-header">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>💰 Dashboard 4 — Volume Bucket MOM</h2>
+    </div>
+    <div class="date-banner" id="d4-date-banner"></div>
+    <div id="d4-insights" class="insights-box" style="display:none">
+      <div class="ins-hdr"><h3>📌 Key Insights</h3><div class="ins-tag">Auto-generated</div></div>
+      <div class="ins-grid" id="d4-ins-grid"></div>
+    </div>
+    <div id="d4-charts"></div>
+    <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d4')">⬇ Export to Excel</button></div>
+    <div class="mom-table-card">
+      <div class="mom-table-hdr"><h3>Volume Bucket Distribution — Month-over-Month</h3><div class="badge" id="d4-badge"></div></div>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>FT Volume Bucket (₹)</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+          <tbody id="d4-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="no-data" id="d4-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="section" id="sec-admin">
+    <div class="view-header">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <h2>🔒 Admin Upload</h2>
+    </div>
+
+    <div class="sub-tabs">
+      <div class="stab active" id="stab-leads" onclick="showSubTab('leads')">📁 Leads File</div>
+      <div class="stab" id="stab-ft" onclick="showSubTab('ft')">📈 FT Raw File</div>
+    </div>
+
+    <div id="sub-leads">
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month Leads files.</p>
+      <div class="uploads-grid">
+        <div class="uzone" id="lz1">
+          <input type="file" id="lf1" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,1)"/>
+          <div class="ico">📂</div>
+          <h3>Leads — Current Month</h3>
+          <div class="fbadge" id="lf1-badge"></div>
+        </div>
+        <div class="uzone" id="lz2">
+          <input type="file" id="lf2" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,2)"/>
+          <div class="ico">🗂️</div>
+          <h3>Leads — Previous Month</h3>
+          <div class="fbadge" id="lf2-badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sub-ft" style="display:none">
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month FT Raw files.</p>
+      <div class="uploads-grid">
+        <div class="uzone" id="fz1">
+          <input type="file" id="ff1" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,1)"/>
+          <div class="ico">📂</div>
+          <h3>FT Raw — Current Month</h3>
+          <div class="fbadge" id="ff1-badge"></div>
+        </div>
+        <div class="uzone" id="fz2">
+          <input type="file" id="ff2" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,2)"/>
+          <div class="ico">🗂️</div>
+          <h3>FT Raw — Previous Month</h3>
+          <div class="fbadge" id="ff2-badge"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bar info" id="adminBar">⏳ Upload Leads and FT files to continue.</div>
+    <div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-label" id="progLabel" style="display:none"></div>
+    <div class="logbox" id="logBox"></div>
+    <div class="btns" id="procBtns" style="display:none">
+      <button class="btn btn-green" id="procBtn" onclick="runProcess()">⚡ Process & Generate Dashboards</button>
+      <button class="btn btn-red" onclick="clearData()">🗑️ Clear All Data</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+const ADMIN_PW = 'jayram@123';
+const CF_WORKER_URL = 'https://lead-to-ft-dashboard-api.SOMETHING.workers.dev';
+let adminSecret = 'DAD@MOM2026!';
+
+let unlocked  = false;
+let dashData  = null;
+let leadsAgg  = [null, null];
+let ftAgg     = [null, null];
+let filesReady = {l0:false, l1:false, f0:false, f1:false};
+
+const VOLUME_BUCKETS = [
+  '1 - 50','51 - 100','101 - 200','201 - 350','351 - 500',
+  '501 - 750','751 - 1000','1001 - 2000','2001 - 3500','3501 - 5000',
+  '5001 - 7500','7501 - 10000','10001 - 15000','15001 - 20000',
+  '20001 - 30000','30001 - 40000','40001 - 50000','> 50000'
+];
+
+function askPW() {
+  if (unlocked) { showTopTab('admin'); return; }
+  document.getElementById('pwModal').classList.add('show');
+  document.getElementById('pwInp').value = '';
+  document.getElementById('pwErr').style.display = 'none';
+  document.getElementById('pwInp').classList.remove('wrong');
+  setTimeout(() => document.getElementById('pwInp').focus(), 80);
+}
+function checkPW() {
+  const v = document.getElementById('pwInp').value;
+  if (v === ADMIN_PW) {
+    unlocked = true;
+    document.getElementById('pwModal').classList.remove('show');
+    showTopTab('admin');
+  } else {
+    document.getElementById('pwInp').classList.add('wrong');
+    document.getElementById('pwErr').style.display = 'block';
+    document.getElementById('pwInp').value = '';
+    setTimeout(() => document.getElementById('pwInp').focus(), 80);
+  }
+}
+function closePW() { document.getElementById('pwModal').classList.remove('show'); }
+
+const SECTIONS = ['home','d1','d2','d3','d4','admin'];
+function showTopTab(id) {
+  SECTIONS.forEach(s => {
+    document.getElementById('sec-'+s).classList.remove('show');
+    const t = document.getElementById('ttab-'+s);
+    if (t) t.classList.remove('active');
+  });
+  document.getElementById('sec-'+id).classList.add('show');
+  const t = document.getElementById('ttab-'+id);
+  if (t) t.classList.add('active');
+}
+function goHome() { showTopTab('home'); }
+function openDash(id) {
+  showTopTab(id);
+  if (dashData) renderDash(id);
+}
+
+function showSubTab(t) {
+  document.getElementById('sub-leads').style.display = t === 'leads' ? 'block' : 'none';
+  document.getElementById('sub-ft').style.display    = t === 'ft'    ? 'block' : 'none';
+  document.getElementById('stab-leads').classList.toggle('active', t === 'leads');
+  document.getElementById('stab-ft').classList.toggle('active', t === 'ft');
+}
+
+function lg(msg, type='info') {
+  const box = document.getElementById('logBox');
+  const d = document.createElement('div');
+  d.className = 'll ' + type;
+  d.textContent = new Date().toLocaleTimeString('en-IN') + ' › ' + msg;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  console.log('[' + type.toUpperCase() + '] ' + msg);
+}
+function setBar(msg, type='info') {
+  const b = document.getElementById('adminBar');
+  b.className = 'bar ' + type;
+  b.innerHTML = type === 'working' ? `<span class="spin"></span>${msg}` : msg;
+}
+function setProgress(pct, label) {
+  document.getElementById('progWrap').style.display  = 'block';
+  document.getElementById('progLabel').style.display = 'block';
+  document.getElementById('progFill').style.width    = pct + '%';
+  document.getElementById('progLabel').textContent   = label;
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function parseDate(raw) {
+  if (!raw && raw !== 0) return null;
+  const s = String(raw).trim();
+  if (!s || s === '-' || s === 'null' || s === '0') return null;
+  if (/^\d{4,6}$/.test(s)) {
+    const serial = parseInt(s);
+    if (serial > 40000 && serial < 60000) {
+      const excelEpoch = new Date(1899, 11, 30);
+      const d = new Date(excelEpoch.getTime() + serial * 86400000);
+      if (!isNaN(d.getTime())) return d;
+    }
+  }
+  const dateOnlyStr = s.split(/\s+/)[0].split('T')[0];
+  const parts = dateOnlyStr.split(/[-\/]/);
+  if (parts.length === 3) {
+    const a = parseInt(parts[0]), b = parseInt(parts[1]), c = parseInt(parts[2]);
+    if (a >= 1 && a <= 31 && b >= 1 && b <= 12 && c > 1000) {
+      const d = new Date(`${c}-${String(b).padStart(2,'0')}-${String(a).padStart(2,'0')}`);
+      if (!isNaN(d.getTime())) return d;
+    }
+    if (a > 1000 && b >= 1 && b <= 12 && c >= 1 && c <= 31) {
+      const d = new Date(`${a}-${String(b).padStart(2,'0')}-${String(c).padStart(2,'0')}`);
+      if (!isNaN(d.getTime())) return d;
+    }
+  }
+  let d = new Date(dateOnlyStr);
+  if (!isNaN(d.getTime()) && d.getFullYear() > 2000) return d;
+  d = new Date(s);
+  if (!isNaN(d.getTime()) && d.getFullYear() > 2000) return d;
+  const monMatch = dateOnlyStr.match(/^(\d{1,2})[-\/\s]([A-Za-z]{3,9})[-\/\s](\d{4})$/);
+  if (monMatch) {
+    d = new Date(`${monMatch[2]} ${monMatch[1]} ${monMatch[3]}`);
+    if (!isNaN(d.getTime())) return d;
+  }
+  return null;
+}
+
+async function handleLeadFile(e, n) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const idx = n - 1;
+  leadsAgg[idx] = null;
+  filesReady['l'+idx] = false;
+  lg(`Reading Leads file ${n}: ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)`, 'info');
+  setBar(`Processing ${f.name}...`, 'working');
+  disableInputs(true);
+  try {
+    if (f.name.match(/\.csv$/i)) {
+      const agg = await streamAggregateLead(f, `Leads ${n}`, idx === 0 ? 10 : 30);
+      leadsAgg[idx] = agg; filesReady['l'+idx] = true;
+      markZone('lz'+n, 'lf'+n+'-badge', f.name, agg.leads);
+      lg(`Leads file ${n} aggregated: ${agg.leads.toLocaleString()} leads, ${agg.acOpen.toLocaleString()} A/C opened`, 'ok');
+    } else {
+      lg(`Reading Excel workbook...`, 'info');
+      const wb = await readWorkbookLazy(f);
+      if (wb.SheetNames.length >= 2 && n === 1) {
+        lg(`2 sheets detected — processing both`, 'info');
+        const agg0 = aggregateLeadRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:'',raw:false}));
+        leadsAgg[0] = agg0; filesReady['l0'] = true;
+        markZone('lz1', 'lf1-badge', f.name + ' — Sheet 1 (Current)', agg0.leads);
+        lg(`Sheet 1 (Current): ${agg0.leads.toLocaleString()} leads`, 'ok');
+        const agg1 = aggregateLeadRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[1]], {defval:'',raw:false}));
+        leadsAgg[1] = agg1; filesReady['l1'] = true;
+        markZone('lz2', 'lf2-badge', f.name + ' — Sheet 2 (Previous)', agg1.leads);
+        lg(`Sheet 2 (Previous): ${agg1.leads.toLocaleString()} leads`, 'ok');
+      } else {
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:'',raw:false});
+        const agg  = aggregateLeadRows(rows);
+        leadsAgg[idx] = agg; filesReady['l'+idx] = true;
+        markZone('lz'+n, 'lf'+n+'-badge', f.name, agg.leads);
+        lg(`Leads file ${n} aggregated: ${agg.leads.toLocaleString()} leads`, 'ok');
+      }
+    }
+    checkAllReady();
+  } catch(err) {
+    lg('Error: ' + err.message, 'err');
+    setBar('Error reading file: ' + err.message, 'err');
+  }
+  disableInputs(false);
+}
+
+async function handleFTFile(e, n) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const idx = n - 1;
+  ftAgg[idx] = null;
+  filesReady['f'+idx] = false;
+  lg(`Reading FT file ${n}: ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)`, 'info');
+  setBar(`Processing ${f.name}...`, 'working');
+  disableInputs(true);
+  try {
+    if (f.name.match(/\.csv$/i)) {
+      const agg = await streamAggregateFT(f, `FT ${n}`, idx === 0 ? 10 : 30);
+      ftAgg[idx] = agg; filesReady['f'+idx] = true;
+      markZone('fz'+n, 'ff'+n+'-badge', f.name, agg.rawTotal);
+      lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1`, 'ok');
+    } else {
+      const wb = await readWorkbookLazy(f);
+      if (wb.SheetNames.length >= 2 && n === 1) {
+        lg(`2 sheets detected — processing both`, 'info');
+        const agg0 = aggregateFTRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:'',raw:false}));
+        ftAgg[0] = agg0; filesReady['f0'] = true;
+        markZone('fz1', 'ff1-badge', f.name + ' — Sheet 1 (Current)', agg0.total);
+        lg(`Sheet 1 (Current): ${agg0.total.toLocaleString()} FT records`, 'ok');
+        const agg1 = aggregateFTRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[1]], {defval:'',raw:false}));
+        ftAgg[1] = agg1; filesReady['f1'] = true;
+        markZone('fz2', 'ff2-badge', f.name + ' — Sheet 2 (Previous)', agg1.total);
+        lg(`Sheet 2 (Previous): ${agg1.total.toLocaleString()} FT records`, 'ok');
+      } else {
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:'',raw:false});
+        const agg  = aggregateFTRows(rows);
+        ftAgg[idx] = agg; filesReady['f'+idx] = true;
+        markZone('fz'+n, 'ff'+n+'-badge', f.name, agg.rawTotal);
+        lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1`, 'ok');
+      }
+    }
+    checkAllReady();
+  } catch(err) {
+    lg('Error: ' + err.message, 'err');
+    setBar('Error reading file: ' + err.message, 'err');
+  }
+  disableInputs(false);
+}
+
+function readWorkbookLazy(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => {
+      try { res(XLSX.read(e.target.result, {type:'array', cellDates:false})); }
+      catch(err) { rej(err); }
+    };
+    r.onerror = () => rej(new Error('File read failed'));
+    r.readAsArrayBuffer(file);
+  });
+}
+
+function newLeadAgg() {
+  return {
+    leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0,
+    disposed:0, nonDisposed:0,
+    clientCodes: new Set(), diyClientCodes: new Set(), nonDiyClientCodes: new Set(),
+    diyAcClientCodes: new Set(), nonDiyAcClientCodes: new Set(),
+    minDate: null, maxDate: null,
+    byDay: {}, byMonthDay: {}
+  };
+}
+
+function newFTAgg() {
+  const agg = {
+    total:0, rawTotal:0,
+    clientCodes: new Set(), allTradeClientCodes: new Set(),
+    buckets:{}, minDate:null, maxDate:null,
+    byDay:{}, byMonthDay:{}, allTradeByMonthDay:{}
+  };
+  VOLUME_BUCKETS.forEach(b => agg.buckets[b] = 0);
+  return agg;
+}
+
+async function streamAggregateLead(file, label, startPct) {
+  const agg = newLeadAgg();
+  let headers = null, colIdx = {};
+  let buffer = '', rowCount = 0, skipped = 0;
+  const totalSize = file.size;
+  let bytesRead = 0;
+  const stream  = file.stream();
+  const reader  = stream.getReader();
+  const decoder = new TextDecoder('utf-8', {fatal:false, ignoreBOM:true});
+
+  const processRow = (cells) => {
+    if (!headers || cells.length < 3) return;
+    const get = col => colIdx[col] !== undefined ? (cells[colIdx[col]] || '').toString().trim() : '';
+    const regDateRaw = get('Registration Date');
+    const parsedRegDate = parseDate(regDateRaw);
+    if (!parsedRegDate) { if (skipped <= 3) lg(`Skipped row — regDateRaw value: "${regDateRaw}"`, 'warn'); skipped++; return; }
+    const parsedDate = parsedRegDate;
+    const dayOfMonth = parsedDate.getDate();
+    if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
+    if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
+    agg.leads++;
+    const leadStage = get('Lead Stage').toString().trim().toUpperCase();
+    const acOpened  = leadStage === 'C6' || leadStage === 'C7';
+    const diy        = isDIYVal(get('isDIY'));
+    const disposition = get('Disposition');
+    const clientCode = (get('Client Code') || get('ClientCode') || get('partycode')).toString().trim().toUpperCase();
+    if (acOpened) { agg.acOpen++; if (diy) agg.diyAcOpen++; else agg.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) agg.disposed++; else agg.nonDisposed++;
+    if (clientCode) {
+      agg.clientCodes.add(clientCode);
+      if (diy) agg.diyClientCodes.add(clientCode); else agg.nonDiyClientCodes.add(clientCode);
+      if (acOpened && diy)  agg.diyAcClientCodes.add(clientCode);
+      if (acOpened && !diy) agg.nonDiyAcClientCodes.add(clientCode);
+    }
+    const lMonth = parsedDate.getMonth();
+    const lYear  = parsedDate.getFullYear();
+    if (!agg.byDay[dayOfMonth]) agg.byDay[dayOfMonth] = {
+      leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0, disposed:0, nonDisposed:0,
+      codes: new Set(), diyCodes: new Set(), nonDiyCodes: new Set(),
+      diyAcCodes: new Set(), nonDiyAcCodes: new Set()
+    };
+    const bkt = agg.byDay[dayOfMonth];
+    bkt.leads++;
+    if (acOpened) { bkt.acOpen++; if (diy) bkt.diyAcOpen++; else bkt.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) bkt.disposed++; else bkt.nonDisposed++;
+    if (clientCode) {
+      bkt.codes.add(clientCode);
+      if (diy) bkt.diyCodes.add(clientCode); else bkt.nonDiyCodes.add(clientCode);
+      if (acOpened && diy)  bkt.diyAcCodes.add(clientCode);
+      if (acOpened && !diy) bkt.nonDiyAcCodes.add(clientCode);
+    }
+    const mdKey = `${lYear}_${lMonth}_${dayOfMonth}`;
+    if (!agg.byMonthDay[mdKey]) agg.byMonthDay[mdKey] = {
+      leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0, disposed:0, nonDisposed:0,
+      codes: new Set(), diyCodes: new Set(), nonDiyCodes: new Set(),
+      diyAcCodes: new Set(), nonDiyAcCodes: new Set()
+    };
+    const mbkt = agg.byMonthDay[mdKey];
+    mbkt.leads++;
+    if (acOpened) { mbkt.acOpen++; if (diy) mbkt.diyAcOpen++; else mbkt.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) mbkt.disposed++; else mbkt.nonDisposed++;
+    if (clientCode) {
+      mbkt.codes.add(clientCode);
+      if (diy) mbkt.diyCodes.add(clientCode); else mbkt.nonDiyCodes.add(clientCode);
+      if (acOpened && diy)  mbkt.diyAcCodes.add(clientCode);
+      if (acOpened && !diy) mbkt.nonDiyAcCodes.add(clientCode);
+    }
+  };
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    bytesRead += value ? value.length : 0;
+    buffer += decoder.decode(value || new Uint8Array(), {stream:!done});
+    const lines = buffer.split(/\r\n|\r|\n/);
+    buffer = lines.pop();
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const cells = parseCSVLine(trimmed);
+      if (!headers) {
+        headers = cells.map(h => h.trim().replace(/^"|"$/g,''));
+        headers.forEach((h,i) => { colIdx[h] = i; });
+        const acCol = headers.find(h => h.toLowerCase().includes('account opening'));
+        const clientCol = headers.find(h => h.toLowerCase().includes('client code'));
+        lg(`${label} — ${headers.length} cols | AC col: "${acCol}" | Client col: "${clientCol}"`, 'info');
+      } else {
+        processRow(cells);
+        rowCount++;
+      }
+    }
+    if (rowCount % 5000 === 0 && rowCount > 0) {
+      const pct = startPct + Math.floor((bytesRead / totalSize) * 15);
+      setProgress(pct, `${label}: ${rowCount.toLocaleString()} rows...`);
+      await sleep(0);
+    }
+  }
+  if (buffer.trim() && headers) processRow(parseCSVLine(buffer.trim()));
+  lg(`${label} — total lines: ${rowCount}, skipped blank: ${skipped}, leads counted: ${agg.leads}`, 'info');
+  return agg;
+}
+
+async function streamAggregateFT(file, label, startPct) {
+  const agg = newFTAgg();
+  let headers = null, colIdx = {};
+  let buffer = '', rowCount = 0;
+  const totalSize = file.size;
+  let bytesRead = 0;
+  const stream  = file.stream();
+  const reader  = stream.getReader();
+  const decoder = new TextDecoder('utf-8', {fatal:false, ignoreBOM:true});
+
+  const processRow = (cells) => {
+    if (!headers || cells.length < 3) return;
+    const get = col => (colIdx[col] !== undefined ? cells[colIdx[col]] : '').toString().trim();
+    agg.rawTotal++;
+    const code   = (get('Clientcode') || get('Client Code')).toUpperCase();
+    const vol    = get('First Trade Date Volume') || get('FirstTradeDateVolume');
+    const bucket = getVolumeBucket(vol);
+    const ftDateRaw    = get('First Trade Date New') || get('First Trade Date') || get('FirstTradeDateNew');
+    const activDateRaw = get('Activation Date') || get('ActivationDate');
+    const parsedDate   = parseDate(ftDateRaw);
+    const activDate    = parseDate(activDateRaw);
+    const bothSameMonth = parsedDate && activDate &&
+      parsedDate.getMonth()    === activDate.getMonth() &&
+      parsedDate.getFullYear() === activDate.getFullYear();
+    if (bucket) agg.buckets[bucket]++;
+    if (parsedDate) {
+      if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
+      if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
+      const day   = parsedDate.getDate();
+      const month = parsedDate.getMonth();
+      const year  = parsedDate.getFullYear();
+      if (!agg.byDay[day]) {
+        agg.byDay[day] = { total:0, codes: new Set(), buckets:{} };
+        VOLUME_BUCKETS.forEach(b => agg.byDay[day].buckets[b] = 0);
+      }
+      agg.byDay[day].total++;
+      if (code) agg.byDay[day].codes.add(code);
+      if (bucket) agg.byDay[day].buckets[bucket]++;
+      if (bothSameMonth) {
+        agg.total++;
+        if (code) agg.clientCodes.add(code);
+        const mdKey = `${year}_${month}_${day}`;
+        if (!agg.byMonthDay[mdKey]) {
+          agg.byMonthDay[mdKey] = { total:0, codes: new Set(), buckets:{} };
+          VOLUME_BUCKETS.forEach(b => agg.byMonthDay[mdKey].buckets[b] = 0);
         }
+        agg.byMonthDay[mdKey].total++;
+        if (code) agg.byMonthDay[mdKey].codes.add(code);
+        if (bucket) agg.byMonthDay[mdKey].buckets[bucket]++;
+      }
+      if (code) agg.allTradeClientCodes.add(code);
+      const atKey = `${year}_${month}_${day}`;
+      if (!agg.allTradeByMonthDay[atKey]) agg.allTradeByMonthDay[atKey] = { total:0, codes: new Set() };
+      agg.allTradeByMonthDay[atKey].total++;
+      if (code) agg.allTradeByMonthDay[atKey].codes.add(code);
+    }
+  };
 
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    bytesRead += value ? value.length : 0;
+    buffer += decoder.decode(value || new Uint8Array(), {stream:!done});
+    const lines = buffer.split(/\r\n|\r|\n/);
+    buffer = lines.pop();
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const cells = parseCSVLine(trimmed);
+      if (!headers) {
+        headers = cells.map(h => h.trim());
+        headers.forEach((h,i) => { colIdx[h] = i; });
+        const activCol  = headers.find(h => h.toLowerCase().includes('activation'));
+        const ftDateCol = headers.find(h => h.toLowerCase().includes('first trade date new') || h.toLowerCase().includes('firsttradedate'));
+        lg(`${label} — ${headers.length} cols | Activation: "${activCol}" | FT Date: "${ftDateCol}"`, 'info');
+      } else {
+        processRow(cells);
+        rowCount++;
+      }
+    }
+    if (rowCount % 5000 === 0 && rowCount > 0) {
+      const pct = startPct + Math.floor((bytesRead / totalSize) * 15);
+      setProgress(pct, `${label}: ${rowCount.toLocaleString()} rows processed...`);
+      await sleep(0);
+    }
+  }
+  if (buffer.trim() && headers) processRow(parseCSVLine(buffer.trim()));
+  lg(`${label} — ${rowCount} rows processed, ${agg.total} valid for D1 (both dates same month)`, 'info');
+  return agg;
+}
+
+function aggregateLeadRows(rows) {
+  const agg = newLeadAgg();
+  for (const row of rows) {
+    const regDateRaw = String(row['Registration Date'] || row['RegistrationDate'] || '').trim();
+    const parsedDate = parseDate(regDateRaw);
+    if (!parsedDate) continue;
+    const dayOfMonth = parsedDate.getDate();
+    const lMonth     = parsedDate.getMonth();
+    const lYear      = parsedDate.getFullYear();
+    if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
+    if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
+    agg.leads++;
+    const leadStage  = String(row['Lead Stage'] || '').trim().toUpperCase();
+    const acOpened   = leadStage === 'C6' || leadStage === 'C7';
+    const diy        = isDIY(row);
+    const disposition = row['Disposition'] || '';
+    const code       = String(row['Client Code'] || row['ClientCode'] || row['partycode'] || '').trim().toUpperCase();
+    if (acOpened) { agg.acOpen++; if (diy) agg.diyAcOpen++; else agg.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) agg.disposed++; else agg.nonDisposed++;
+    if (code) {
+      agg.clientCodes.add(code);
+      if (diy) agg.diyClientCodes.add(code); else agg.nonDiyClientCodes.add(code);
+      if (acOpened && diy)  agg.diyAcClientCodes.add(code);
+      if (acOpened && !diy) agg.nonDiyAcClientCodes.add(code);
+    }
+    if (!agg.byDay[dayOfMonth]) agg.byDay[dayOfMonth] = {
+      leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0, disposed:0, nonDisposed:0,
+      codes: new Set(), diyCodes: new Set(), nonDiyCodes: new Set(),
+      diyAcCodes: new Set(), nonDiyAcCodes: new Set()
+    };
+    const bkt = agg.byDay[dayOfMonth];
+    bkt.leads++;
+    if (acOpened) { bkt.acOpen++; if (diy) bkt.diyAcOpen++; else bkt.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) bkt.disposed++; else bkt.nonDisposed++;
+    if (code) {
+      bkt.codes.add(code);
+      if (diy) bkt.diyCodes.add(code); else bkt.nonDiyCodes.add(code);
+      if (acOpened && diy)  bkt.diyAcCodes.add(code);
+      if (acOpened && !diy) bkt.nonDiyAcCodes.add(code);
+    }
+    const mdKey = `${lYear}_${lMonth}_${dayOfMonth}`;
+    if (!agg.byMonthDay[mdKey]) agg.byMonthDay[mdKey] = {
+      leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0, disposed:0, nonDisposed:0,
+      codes: new Set(), diyCodes: new Set(), nonDiyCodes: new Set(),
+      diyAcCodes: new Set(), nonDiyAcCodes: new Set()
+    };
+    const mbkt = agg.byMonthDay[mdKey];
+    mbkt.leads++;
+    if (acOpened) { mbkt.acOpen++; if (diy) mbkt.diyAcOpen++; else mbkt.nonDiyAcOpen++; }
+    if (isDisposed(disposition)) mbkt.disposed++; else mbkt.nonDisposed++;
+    if (code) {
+      mbkt.codes.add(code);
+      if (diy) mbkt.diyCodes.add(code); else mbkt.nonDiyCodes.add(code);
+      if (acOpened && diy)  mbkt.diyAcCodes.add(code);
+      if (acOpened && !diy) mbkt.nonDiyAcCodes.add(code);
+    }
+  }
+  lg(`aggregateLeadRows — total rows from XLSX: ${rows.length} | counted as leads: ${agg.leads}`, 'info');
+  return agg;
+}
+
+function aggregateFTRows(rows) {
+  const agg = newFTAgg();
+  for (const row of rows) {
+    agg.rawTotal++;
+    const code   = String(row['Clientcode'] || row['Client Code'] || '').trim().toUpperCase();
+    const bucket = getVolumeBucket(row['First Trade Date Volume'] || 0);
+    const parsedDate = parseDate(row['First Trade Date New'] || row['First Trade Date'] || row['FirstTradeDateNew'] || '');
+    const activDate  = parseDate(row['Activation Date'] || row['ActivationDate'] || '');
+    const bothSameMonth = parsedDate && activDate &&
+      parsedDate.getMonth()    === activDate.getMonth() &&
+      parsedDate.getFullYear() === activDate.getFullYear();
+    if (bucket) agg.buckets[bucket]++;
+    if (parsedDate) {
+      if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
+      if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
+      const day   = parsedDate.getDate();
+      const month = parsedDate.getMonth();
+      const year  = parsedDate.getFullYear();
+      if (!agg.byDay[day]) {
+        agg.byDay[day] = { total:0, codes: new Set(), buckets:{} };
+        VOLUME_BUCKETS.forEach(b => agg.byDay[day].buckets[b] = 0);
+      }
+      agg.byDay[day].total++;
+      if (code) agg.byDay[day].codes.add(code);
+      if (bucket) agg.byDay[day].buckets[bucket]++;
+      if (bothSameMonth) {
+        agg.total++;
+        if (code) agg.clientCodes.add(code);
+        const mdKey = `${year}_${month}_${day}`;
+        if (!agg.byMonthDay[mdKey]) {
+          agg.byMonthDay[mdKey] = { total:0, codes: new Set(), buckets:{} };
+          VOLUME_BUCKETS.forEach(b => agg.byMonthDay[mdKey].buckets[b] = 0);
+        }
+        agg.byMonthDay[mdKey].total++;
+        if (code) agg.byMonthDay[mdKey].codes.add(code);
+        if (bucket) agg.byMonthDay[mdKey].buckets[bucket]++;
+      }
+      if (code) agg.allTradeClientCodes.add(code);
+      const atKey = `${year}_${month}_${day}`;
+      if (!agg.allTradeByMonthDay[atKey]) agg.allTradeByMonthDay[atKey] = { total:0, codes: new Set() };
+      agg.allTradeByMonthDay[atKey].total++;
+      if (code) agg.allTradeByMonthDay[atKey].codes.add(code);
+    }
+  }
+  lg(`aggregateFTRows — ${agg.rawTotal} total rows, ${agg.total} valid for D1 (both dates same month)`, 'info');
+  return agg;
+}
+
+function getDaysWithData(agg) {
+  return Object.keys(agg.byDay)
+    .map(Number)
+    .filter(d => agg.byDay[d] && (agg.byDay[d].leads > 0 || agg.byDay[d].total > 0 || agg.byDay[d].codes?.size > 0))
+    .sort((a,b) => a - b);
+}
+
+function getDominantMonthFromAgg(agg) {
+  if (agg.byMonthDay && Object.keys(agg.byMonthDay).length > 0) {
+    const monthCounts = {};
+    for (const key of Object.keys(agg.byMonthDay)) {
+      const [year, month] = key.split('_').map(Number);
+      const mk = `${year}_${month}`;
+      const b  = agg.byMonthDay[key];
+      monthCounts[mk] = (monthCounts[mk] || 0) + (b.leads || b.total || 0);
+    }
+    const dominant = Object.entries(monthCounts).sort((a,b) => b[1]-a[1])[0][0];
+    const [year, month] = dominant.split('_').map(Number);
+    return { month, year };
+  }
+  if (agg.maxDate) return { month: agg.maxDate.getMonth(), year: agg.maxDate.getFullYear() };
+  return null;
+}
+
+function getDaysForMonth(agg, month, year) {
+  if (agg.byMonthDay && Object.keys(agg.byMonthDay).length > 0) {
+    return Object.keys(agg.byMonthDay)
+      .filter(key => { const [y, m] = key.split('_').map(Number); return y === year && m === month; })
+      .map(key => parseInt(key.split('_')[2]))
+      .filter(d => { const b = agg.byMonthDay[`${year}_${month}_${d}`]; return b && (b.leads > 0 || b.total > 0); })
+      .sort((a,b) => a - b);
+  }
+  return getDaysWithData(agg);
+}
+
+function collapseLeadAgg(agg, allowedDays, targetMonth, targetYear) {
+  const out = {
+    leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0,
+    disposed:0, nonDisposed:0,
+    clientCodes: new Set(), diyClientCodes: new Set(), nonDiyClientCodes: new Set(),
+    diyAcClientCodes: new Set(), nonDiyAcClientCodes: new Set()
+  };
+  for (const d of allowedDays) {
+    const key = (agg.byMonthDay && targetMonth !== undefined && targetYear !== undefined)
+      ? `${targetYear}_${targetMonth}_${d}` : null;
+    const b = key ? (agg.byMonthDay[key] || null) : agg.byDay[d];
+    if (!b) continue;
+    out.leads        += b.leads;
+    out.acOpen       += b.acOpen;
+    out.diyAcOpen    += b.diyAcOpen;
+    out.nonDiyAcOpen += b.nonDiyAcOpen;
+    out.disposed     += b.disposed;
+    out.nonDisposed  += b.nonDisposed;
+    if (b.codes)         b.codes.forEach(c         => out.clientCodes.add(c));
+    if (b.diyCodes)      b.diyCodes.forEach(c      => out.diyClientCodes.add(c));
+    if (b.nonDiyCodes)   b.nonDiyCodes.forEach(c   => out.nonDiyClientCodes.add(c));
+    if (b.diyAcCodes)    b.diyAcCodes.forEach(c    => out.diyAcClientCodes.add(c));
+    if (b.nonDiyAcCodes) b.nonDiyAcCodes.forEach(c => out.nonDiyAcClientCodes.add(c));
+  }
+  return out;
+}
+
+function collapseFTAgg(agg, targetMonth, targetYear, allowedDays) {
+  const out = { total:0, clientCodes: new Set(), buckets:{} };
+  VOLUME_BUCKETS.forEach(b => out.buckets[b] = 0);
+  for (const d of allowedDays) {
+    const key = `${targetYear}_${targetMonth}_${d}`;
+    const b = agg.byMonthDay && agg.byMonthDay[key];
+    if (!b) continue;
+    out.total += b.total;
+    if (b.codes) b.codes.forEach(c => out.clientCodes.add(c));
+    VOLUME_BUCKETS.forEach(bkt => { out.buckets[bkt] += (b.buckets[bkt] || 0); });
+  }
+  return out;
+}
+
+function collapseFTAggAllTrade(agg, targetMonth, targetYear, allowedDays) {
+  const out = { total:0, clientCodes: new Set() };
+  for (const d of allowedDays) {
+    const key = `${targetYear}_${targetMonth}_${d}`;
+    const b = agg.allTradeByMonthDay && agg.allTradeByMonthDay[key];
+    if (!b) continue;
+    out.total += b.total;
+    if (b.codes) b.codes.forEach(c => out.clientCodes.add(c));
+  }
+  return out;
+}
+
+function parseCSVLine(line) {
+  const tabCount   = (line.match(/\t/g) || []).length;
+  const commaCount = (line.match(/,/g)  || []).length;
+  const delim      = tabCount > commaCount ? '\t' : ',';
+  if (line.indexOf('"') === -1) return line.split(delim).map(c => c.trim());
+  const result = [];
+  let current = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === delim && !inQuotes) {
+      result.push(current.trim()); current = '';
+    } else { current += ch; }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+function disableInputs(disabled) {
+  ['lf1','lf2','ff1','ff2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = disabled;
+  });
+}
+
+function markZone(zoneId, badgeId, name, count) {
+  document.getElementById(zoneId).classList.add('done');
+  const b = document.getElementById(badgeId);
+  b.textContent = `✓ ${name} — ${count.toLocaleString()} rows`;
+  b.style.display = 'inline-block';
+}
+
+function checkAllReady() {
+  const leadsReady = leadsAgg[0] !== null && leadsAgg[1] !== null;
+  const ftReady    = ftAgg[0]    !== null && ftAgg[1]    !== null;
+  if (leadsReady && ftReady) {
+    document.getElementById('procBtns').style.display = 'flex';
+    setBar('✓ All files loaded & aggregated. Ready to generate dashboards!', 'ok');
+    lg('All files ready', 'ok');
+  } else {
+    const missing = [];
+    if (!leadsAgg[0]) missing.push('Leads Current');
+    if (!leadsAgg[1]) missing.push('Leads Previous');
+    if (!ftAgg[0])    missing.push('FT Current');
+    if (!ftAgg[1])    missing.push('FT Previous');
+    setBar('Waiting for: ' + missing.join(', '), 'info');
+  }
+}
+
+function getVolumeBucket(vol) {
+  const v = parseFloat(String(vol).replace(/,/g,''));
+  if (isNaN(v) || v <= 0) return '';
+  if (v <= 50)    return '1 - 50';
+  if (v <= 100)   return '51 - 100';
+  if (v <= 200)   return '101 - 200';
+  if (v <= 350)   return '201 - 350';
+  if (v <= 500)   return '351 - 500';
+  if (v <= 750)   return '501 - 750';
+  if (v <= 1000)  return '751 - 1000';
+  if (v <= 2000)  return '1001 - 2000';
+  if (v <= 3500)  return '2001 - 3500';
+  if (v <= 5000)  return '3501 - 5000';
+  if (v <= 7500)  return '5001 - 7500';
+  if (v <= 10000) return '7501 - 10000';
+  if (v <= 15000) return '10001 - 15000';
+  if (v <= 20000) return '15001 - 20000';
+  if (v <= 30000) return '20001 - 30000';
+  if (v <= 40000) return '30001 - 40000';
+  if (v <= 50000) return '40001 - 50000';
+  return '> 50000';
+}
+
+function isDisposed(disposition) {
+  const d = (disposition || '').toString().trim().toLowerCase();
+  return d !== '' && d !== 'not_connected';
+}
+
+function isDIY(row) {
+  const v = (row['isDIY'] || '').toString().trim().toLowerCase();
+  return v === 'true' || v === 'yes' || v === 'y' || v === '1';
+}
+function isDIYVal(v) {
+  const s = (v || '').toString().trim().toLowerCase();
+  return s === 'true' || s === 'yes' || s === 'y' || s === '1';
+}
+
+function changePct(curr, prev) {
+  if (curr === 0 && prev === 0) return null;
+  if (curr === 0) return -100;
+  return ((curr - prev) / curr) * 100;
+}
+
+function fmtChange(pct) {
+  if (pct === null || pct === undefined || isNaN(pct)) return { html:'<span class="val-neu">—</span>', val:'' };
+  const sign = pct > 0 ? '+' : '';
+  const cls  = pct > 0 ? 'val-pos' : pct < 0 ? 'val-neg' : 'val-neu';
+  return { html:`<span class="${cls}">${sign}${pct.toFixed(2)}%</span>`, val: sign + pct.toFixed(2) + '%' };
+}
+
+function fmtChangePctPoint(curr, prev) {
+  if (curr === null || curr === undefined || isNaN(curr) ||
+      prev === null || prev === undefined || isNaN(prev)) {
+    return { html:'<span class="val-neu">—</span>', val:'' };
+  }
+  const diff = curr - prev;
+  const sign = diff > 0 ? '+' : '';
+  const cls  = diff > 0 ? 'val-pos' : diff < 0 ? 'val-neg' : 'val-neu';
+  return { html:`<span class="${cls}">${sign}${diff.toFixed(2)}%</span>`, val: sign + diff.toFixed(2) + '%' };
+}
+
+function fmtPct(num, den) {
+  if (!den || den === 0) return '0.00%';
+  return ((num / den) * 100).toFixed(2) + '%';
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+async function runProcess() {
+  const btn = document.getElementById('procBtn');
+  btn.disabled = true;
+  setBar('Finalizing dashboards...', 'working');
+  setProgress(0, 'Cross-referencing data...');
+  await sleep(50);
+
+  try {
+    const lC = leadsAgg[0], lP = leadsAgg[1];
+    const fC = ftAgg[0],    fP = ftAgg[1];
+
+    const leadCurrDom = getDominantMonthFromAgg(lC);
+    const leadPrevDom = getDominantMonthFromAgg(lP);
+    const ftCurrDom   = getDominantMonthFromAgg(fC);
+    const ftPrevDom   = getDominantMonthFromAgg(fP);
+
+    const lCMonth = leadCurrDom ? leadCurrDom.month : new Date().getMonth();
+    const lCYear  = leadCurrDom ? leadCurrDom.year  : new Date().getFullYear();
+    const lPMonth = leadPrevDom ? leadPrevDom.month : (lCMonth === 0 ? 11 : lCMonth - 1);
+    const lPYear  = leadPrevDom ? leadPrevDom.year  : (lCMonth === 0 ? lCYear - 1 : lCYear);
+
+    const ftCurrMonth = ftCurrDom ? ftCurrDom.month : (fC.maxDate ? fC.maxDate.getMonth() : new Date().getMonth());
+    const ftCurrYear  = ftCurrDom ? ftCurrDom.year  : (fC.maxDate ? fC.maxDate.getFullYear() : new Date().getFullYear());
+    const ftPrevMonth = ftPrevDom ? ftPrevDom.month : (ftCurrMonth === 0 ? 11 : ftCurrMonth - 1);
+    const ftPrevYear  = ftPrevDom ? ftPrevDom.year  : (ftCurrMonth === 0 ? ftCurrYear - 1 : ftCurrYear);
+
+    lg(`Lead curr: ${lCMonth+1}/${lCYear} | Lead prev: ${lPMonth+1}/${lPYear}`, 'info');
+    lg(`FT curr: ${ftCurrMonth+1}/${ftCurrYear} | FT prev: ${ftPrevMonth+1}/${ftPrevYear}`, 'info');
+
+    const leadCurrDaysArr = getDaysForMonth(lC, lCMonth, lCYear);
+    const leadPrevDaysAll = getDaysForMonth(lP, lPMonth, lPYear);
+    const ftCurrDaysArr   = getDaysForMonth(fC, ftCurrMonth, ftCurrYear);
+    const ftPrevDaysAll   = getDaysForMonth(fP, ftPrevMonth, ftPrevYear);
+
+    const nLeadDays = leadCurrDaysArr.length;
+    const nFTDays   = ftCurrDaysArr.length;
+    const leadPrevDaysToUse = leadPrevDaysAll.slice(0, nLeadDays);
+    const ftPrevDaysToUse   = ftPrevDaysAll.slice(0, nFTDays);
+
+    lg(`Lead curr — ${nLeadDays} days in ${lCMonth+1}/${lCYear}: [${leadCurrDaysArr.join(',')}]`, 'info');
+    lg(`Lead prev — first ${nLeadDays} days in ${lPMonth+1}/${lPYear}: [${leadPrevDaysToUse.join(',')}]`, 'info');
+    lg(`FT curr — ${nFTDays} days: [${ftCurrDaysArr.join(',')}]`, 'info');
+    lg(`FT prev — first ${nFTDays} days: [${ftPrevDaysToUse.join(',')}]`, 'info');
+
+    const hasPrevLeadDays = leadPrevDaysAll.length > 0;
+    const hasPrevFTDays   = ftPrevDaysAll.length > 0;
+    const hasCurrFTDays   = ftCurrDaysArr.length > 0;
+
+    const lCFinal = collapseLeadAgg(lC, leadCurrDaysArr, lCMonth, lCYear);
+    const lPFinal = hasPrevLeadDays ? collapseLeadAgg(lP, leadPrevDaysToUse, lPMonth, lPYear) : lP;
+
+    const fCFinal = hasCurrFTDays && fC.byMonthDay && Object.keys(fC.byMonthDay).length > 0
+      ? collapseFTAgg(fC, ftCurrMonth, ftCurrYear, ftCurrDaysArr) : fC;
+    const fPFinal = hasPrevFTDays && fP.byMonthDay && Object.keys(fP.byMonthDay).length > 0
+      ? collapseFTAgg(fP, ftPrevMonth, ftPrevYear, ftPrevDaysToUse) : fP;
+
+    if (!hasPrevLeadDays) lg('Warning: Prev leads dates not parseable — using full data', 'warn');
+    if (!hasPrevFTDays)   lg('Warning: Prev FT dates not parseable — using full data', 'warn');
+
+    lg(`Leads Curr (filtered): ${lCFinal.leads.toLocaleString()} | Prev (capped): ${lPFinal.leads.toLocaleString()}`, 'info');
+    lg(`FT Curr (month-filtered): ${fCFinal.total.toLocaleString()} | Prev (month-filtered+capped): ${fPFinal.total.toLocaleString()}`, 'info');
+
+    setProgress(20, 'Computing D1 — Leads Funnel...');
+    await sleep(20);
+
+    const fCFinalD3 = hasCurrFTDays && fC.allTradeByMonthDay && Object.keys(fC.allTradeByMonthDay).length > 0
+      ? collapseFTAggAllTrade(fC, ftCurrMonth, ftCurrYear, ftCurrDaysArr)
+      : { total: fC.total, clientCodes: fC.allTradeClientCodes || new Set() };
+    const fPFinalD3 = hasPrevFTDays && fP.allTradeByMonthDay && Object.keys(fP.allTradeByMonthDay).length > 0
+      ? collapseFTAggAllTrade(fP, ftPrevMonth, ftPrevYear, ftPrevDaysToUse)
+      : { total: fP.total, clientCodes: fP.allTradeClientCodes || new Set() };
+
+    lg(`FT Curr D3 (all trades, month+day filtered): ${fCFinalD3.total.toLocaleString()} | Prev: ${fPFinalD3.total.toLocaleString()}`, 'info');
+
+    const intersect = (setA, setB) => {
+      if (!setA || !setB) return 0;
+      let count = 0;
+      const [small, large] = setA.size <= setB.size ? [setA, setB] : [setB, setA];
+      for (const v of small) { if (large.has(v)) count++; }
+      return count;
+    };
+
+    const d1CurrFT       = intersect(lCFinal.clientCodes,    fCFinal.clientCodes);
+    const d1PrevFT       = intersect(lPFinal.clientCodes,    fPFinal.clientCodes);
+    const d1CurrDiyFT    = intersect(lCFinal.diyClientCodes    || new Set(), fCFinal.clientCodes);
+    const d1CurrNonDiyFT = intersect(lCFinal.nonDiyClientCodes || new Set(), fCFinal.clientCodes);
+    const d1PrevDiyFT    = intersect(lPFinal.diyClientCodes    || new Set(), fPFinal.clientCodes);
+    const d1PrevNonDiyFT = intersect(lPFinal.nonDiyClientCodes || new Set(), fPFinal.clientCodes);
+
+    const d3CurrDiyAcFT    = intersect(lCFinal.diyAcClientCodes    || new Set(), fCFinalD3.clientCodes);
+    const d3CurrNonDiyAcFT = intersect(lCFinal.nonDiyAcClientCodes || new Set(), fCFinalD3.clientCodes);
+    const d3PrevDiyAcFT    = intersect(lPFinal.diyAcClientCodes    || new Set(), fPFinalD3.clientCodes);
+    const d3PrevNonDiyAcFT = intersect(lPFinal.nonDiyAcClientCodes || new Set(), fPFinalD3.clientCodes);
+
+    lg(`D1 — Curr FT: ${d1CurrFT}, DIY FT: ${d1CurrDiyFT}, NonDIY FT: ${d1CurrNonDiyFT}`, 'ok');
+    lg(`D3 — Curr DIY FT: ${d3CurrDiyAcFT}, NonDIY FT: ${d3CurrNonDiyAcFT}`, 'ok');
+
+    setProgress(60, 'Building dashboard data...');
+    await sleep(20);
+
+    const d1 = {
+      curr: { leads:lCFinal.leads, acOpen:lCFinal.acOpen, ftDone:d1CurrFT, diyFT:d1CurrDiyFT, nonDiyFT:d1CurrNonDiyFT },
+      prev: { leads:lPFinal.leads, acOpen:lPFinal.acOpen, ftDone:d1PrevFT, diyFT:d1PrevDiyFT, nonDiyFT:d1PrevNonDiyFT }
+    };
+    const d2 = {
+      curr: { leads:lCFinal.leads, disposed:lCFinal.disposed, nonDisposed:lCFinal.nonDisposed },
+      prev: { leads:lPFinal.leads, disposed:lPFinal.disposed, nonDisposed:lPFinal.nonDisposed }
+    };
+    const d3 = {
+      curr: { accounts:lCFinal.acOpen, diyAccounts:lCFinal.diyAcOpen, diyFT:d3CurrDiyAcFT, nonDiyAccounts:lCFinal.nonDiyAcOpen, nonDiyFT:d3CurrNonDiyAcFT },
+      prev: { accounts:lPFinal.acOpen, diyAccounts:lPFinal.diyAcOpen, diyFT:d3PrevDiyAcFT, nonDiyAccounts:lPFinal.nonDiyAcOpen, nonDiyFT:d3PrevNonDiyAcFT }
+    };
+    const d4 = { curr:{...fCFinal.buckets}, prev:{...fPFinal.buckets} };
+
+    lg(`D1 — Curr FT: ${d1CurrFT}, DIY FT: ${d1CurrDiyFT}, NonDIY FT: ${d1CurrNonDiyFT}`, 'ok');
+    lg(`D3 — Curr Accounts: ${lCFinal.acOpen}, DIY Ac: ${lCFinal.diyAcOpen}, NonDIY Ac: ${lCFinal.nonDiyAcOpen}`, 'ok');
+
+    const dateRangeInfo = {
+      leadCurrMin:  lC.minDate ? lC.minDate.toISOString() : null,
+      leadCurrMax:  lC.maxDate ? lC.maxDate.toISOString() : null,
+      leadCurrDays: leadCurrDaysArr,
+      leadPrevDays: leadPrevDaysToUse,
+      ftCurrDays:   ftCurrDaysArr,
+      ftPrevDays:   ftPrevDaysToUse,
+      ftCurrMonth, ftCurrYear,
+      ftPrevMonth, ftPrevYear,
+      prevCapped:   hasPrevLeadDays
+    };
+
+    dashData = {
+      d1, d2, d3, d4,
+      dateRangeInfo,
+      processedAt: new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'})
+    };
+
+    try {
+      localStorage.setItem('ftMOMDashboard', JSON.stringify(dashData));
+      lg('Saved to localStorage', 'ok');
+    } catch(e) {
+      lg('localStorage save failed: ' + e.message, 'warn');
+    }
+
+    if (adminSecret) {
+      await publishToGitHub(dashData);
+    } else {
+      lg('No admin secret set — data saved locally only.', 'warn');
+    }
+
+    setProgress(100, '✓ Complete!');
+    setBar('✓ All dashboards generated!', 'ok');
+    lg('✓ All done!', 'ok');
+    btn.disabled = false;
+    updateCardStatuses();
+    await sleep(800);
+    goHome();
+    updateHomeBar();
+
+  } catch(err) {
+    lg('ERROR: ' + err.message, 'err');
+    console.error(err);
+    setBar('✗ Error: ' + err.message, 'err');
+    btn.disabled = false;
+  }
+}
+
+function showDateBanner(dashId) {
+  const el = document.getElementById(dashId + '-date-banner');
+  if (!el || !dashData || !dashData.dateRangeInfo) return;
+}
+
+function renderDash(id) {
+  if (!dashData) {
+    ['d1','d2','d3','d4'].forEach(d => {
+      document.getElementById(d+'-nodata').style.display = 'block';
+    });
+    return;
+  }
+  if (id === 'd1') renderD1();
+  if (id === 'd2') renderD2();
+  if (id === 'd3') renderD3();
+  if (id === 'd4') renderD4();
+}
+
+function renderD1() {
+  const {d1} = dashData;
+  const c = d1.curr, p = d1.prev;
+  document.getElementById('d1-nodata').style.display = 'none';
+  showDateBanner('d1');
+  const convCurr = c.leads > 0 ? (c.acOpen / c.leads) * 100 : 0;
+  const convPrev = p.leads > 0 ? (p.acOpen / p.leads) * 100 : 0;
+  const rows = [
+    { label:'Leads',      curr:c.leads,    prev:p.leads,    isSub:false, isPct:false },
+    { label:'A/C Open',   curr:c.acOpen,   prev:p.acOpen,   isSub:false, isPct:false },
+    { label:'Conv %',     curr:convCurr,   prev:convPrev,   isSub:false, isPct:true  },
+    { label:'FT Done',    curr:c.ftDone,   prev:p.ftDone,   isSub:false, isPct:false },
+    { label:'DIY FT',     curr:c.diyFT,    prev:p.diyFT,    isSub:true,  isPct:false },
+    { label:'Non DIY FT', curr:c.nonDiyFT, prev:p.nonDiyFT, isSub:true,  isPct:false },
+  ];
+  let html = '';
+  rows.forEach(r => {
+    const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
+    const currDisp = r.isPct ? `<span class="val-pct">${r.curr.toFixed(2)}%</span>` : `<span class="val-num">${r.curr.toLocaleString()}</span>`;
+    const prevDisp = r.isPct ? `<span class="val-pct">${r.prev.toFixed(2)}%</span>` : `<span class="val-num">${r.prev.toLocaleString()}</span>`;
+    const cls = r.isSub ? ' row-sub' : '';
+    html += `<tr class="${cls}"><td>${r.isSub ? '↳ ' : ''}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
+  });
+  document.getElementById('d1-tbody').innerHTML = html;
+  document.getElementById('d1-badge').textContent = 'Current vs Previous';
+  const ins = [
+    `<strong>${c.leads.toLocaleString()}</strong> leads this month vs <strong>${p.leads.toLocaleString()}</strong> previous — ${fmtChange(changePct(c.leads, p.leads)).html} change`,
+    `A/C Open rate: <strong>${convCurr.toFixed(2)}%</strong> current vs <strong>${convPrev.toFixed(2)}%</strong> previous`,
+    `FT count: <strong>${c.ftDone.toLocaleString()}</strong> this month vs <strong>${p.ftDone.toLocaleString()}</strong> previous`,
+    `DIY FTs: <strong>${c.diyFT.toLocaleString()}</strong> | Non-DIY FTs: <strong>${c.nonDiyFT.toLocaleString()}</strong> this month`,
+    `DIY share of FTs: <strong>${fmtPct(c.diyFT, c.ftDone)}</strong> current vs <strong>${fmtPct(p.diyFT, p.ftDone)}</strong> previous`,
+  ];
+  renderInsights('d1', ins);
+  const d1ChartsEl = document.getElementById('d1-charts');
+  if (d1ChartsEl) d1ChartsEl.innerHTML = `
+    <div class="charts-grid">
+      <div class="chart-card"><h4>Leads vs A/C Open — MOM</h4><canvas id="d1c1"></canvas></div>
+      <div class="chart-card"><h4>FT Done — MOM</h4><canvas id="d1c2"></canvas></div>
+      <div class="chart-card"><h4>Current Month — DIY vs Non-DIY FT</h4><canvas id="d1c3"></canvas></div>
+      <div class="chart-card"><h4>Conv % Trend — MOM</h4><canvas id="d1c4"></canvas></div>
+    </div>`;
+  setTimeout(() => {
+    makeBarChart('d1c1', ['Leads','A/C Open'], [c.leads, c.acOpen], [p.leads, p.acOpen]);
+    makeBarChart('d1c2', ['FT Done','DIY FT','Non-DIY FT'], [c.ftDone, c.diyFT, c.nonDiyFT], [p.ftDone, p.diyFT, p.nonDiyFT]);
+    if (c.diyFT > 0 || c.nonDiyFT > 0) {
+      makePieChart('d1c3', ['DIY FT','Non-DIY FT'], [c.diyFT, c.nonDiyFT], [CHART_COLORS.curr, CHART_COLORS.warn]);
+    } else {
+      const ctx = document.getElementById('d1c3');
+      if (ctx) {
+        ctx.style.display = 'none';
+        const msg = document.createElement('div');
+        msg.style.cssText = 'display:flex;align-items:center;justify-content:center;height:200px;color:#8892a4;font-size:13px;font-family:Space Mono,monospace;';
+        msg.textContent = 'No FT data this month';
+        ctx.parentElement.appendChild(msg);
+      }
+    }
+    makeLineChart('d1c4', ['Previous Month', 'Current Month'], [parseFloat(convPrev.toFixed(2)), parseFloat(convCurr.toFixed(2))], [], ['Conv %']);
+  }, 100);
+}
+
+function renderD2() {
+  const {d2} = dashData;
+  const c = d2.curr, p = d2.prev;
+  document.getElementById('d2-nodata').style.display = 'none';
+  showDateBanner('d2');
+  const dispPctC    = c.leads > 0 ? (c.disposed    / c.leads) * 100 : 0;
+  const dispPctP    = p.leads > 0 ? (p.disposed    / p.leads) * 100 : 0;
+  const nonDispPctC = c.leads > 0 ? (c.nonDisposed / c.leads) * 100 : 0;
+  const nonDispPctP = p.leads > 0 ? (p.nonDisposed / p.leads) * 100 : 0;
+  const rows = [
+    { label:'Leads',             curr:c.leads,       prev:p.leads,       isSub:false, isPct:false },
+    { label:'Disposed',          curr:c.disposed,    prev:p.disposed,    isSub:false, isPct:false },
+    { label:'Disposed In %',     curr:dispPctC,      prev:dispPctP,      isSub:true,  isPct:true  },
+    { label:'Non Disposed',      curr:c.nonDisposed, prev:p.nonDisposed, isSub:false, isPct:false },
+    { label:'Non Disposed In %', curr:nonDispPctC,   prev:nonDispPctP,   isSub:true,  isPct:true  },
+  ];
+  let html = '';
+  rows.forEach(r => {
+    const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
+    const currDisp = r.isPct ? `<span class="val-pct">${r.curr.toFixed(2)}%</span>` : `<span class="val-num">${r.curr.toLocaleString()}</span>`;
+    const prevDisp = r.isPct ? `<span class="val-pct">${r.prev.toFixed(2)}%</span>` : `<span class="val-num">${r.prev.toLocaleString()}</span>`;
+    const cls = r.isSub ? ' row-sub' : '';
+    html += `<tr class="${cls}"><td>${r.isSub ? '↳ ' : ''}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
+  });
+  document.getElementById('d2-tbody').innerHTML = html;
+  document.getElementById('d2-badge').textContent = 'Current vs Previous';
+  const ins = [
+    `<strong>${c.leads.toLocaleString()}</strong> total leads this month vs <strong>${p.leads.toLocaleString()}</strong> previous`,
+    `Disposed rate: <strong>${dispPctC.toFixed(2)}%</strong> current vs <strong>${dispPctP.toFixed(2)}%</strong> previous — ${fmtChangePctPoint(dispPctC, dispPctP).html}`,
+    `Disposed count: <strong>${c.disposed.toLocaleString()}</strong> this month vs <strong>${p.disposed.toLocaleString()}</strong> previous`,
+    `Non-Disposed: <strong>${c.nonDisposed.toLocaleString()}</strong> this month vs <strong>${p.nonDisposed.toLocaleString()}</strong> previous`,
+    `Pending follow-up (Non-Disposed): ${fmtChange(changePct(c.nonDisposed, p.nonDisposed)).html} change MOM`,
+  ];
+  renderInsights('d2', ins);
+  const d2ChartsEl = document.getElementById('d2-charts');
+  if (d2ChartsEl) d2ChartsEl.innerHTML = `
+    <div class="charts-grid">
+      <div class="chart-card"><h4>Disposed vs Non-Disposed — MOM</h4><canvas id="d2c1"></canvas></div>
+      <div class="chart-card"><h4>Current Month Split</h4><canvas id="d2c2"></canvas></div>
+      <div class="chart-card"><h4>Previous Month Split</h4><canvas id="d2c3"></canvas></div>
+      <div class="chart-card"><h4>Disposed % Trend — MOM</h4><canvas id="d2c4"></canvas></div>
+    </div>`;
+  setTimeout(() => {
+    makeBarChart('d2c1', ['Leads','Disposed','Non-Disposed'], [c.leads, c.disposed, c.nonDisposed], [p.leads, p.disposed, p.nonDisposed]);
+    makePieChart('d2c2', ['Disposed','Non-Disposed'], [c.disposed, c.nonDisposed], [CHART_COLORS.curr, CHART_COLORS.warn]);
+    makePieChart('d2c3', ['Disposed','Non-Disposed'], [p.disposed, p.nonDisposed], [CHART_COLORS.prev, CHART_COLORS.warn]);
+    makeLineChart('d2c4', ['Previous Month', 'Current Month'],
+      [parseFloat(dispPctP.toFixed(2)), parseFloat(dispPctC.toFixed(2))],
+      [parseFloat(nonDispPctP.toFixed(2)), parseFloat(nonDispPctC.toFixed(2))],
+      ['Disposed %', 'Non-Disposed %']);
+  }, 100);
+}
+
+function renderD3() {
+  const {d3} = dashData;
+  const c = d3.curr, p = d3.prev;
+  document.getElementById('d3-nodata').style.display = 'none';
+  showDateBanner('d3');
+  const diyFTPctC    = c.diyAccounts    > 0 ? (c.diyFT    / c.diyAccounts)    * 100 : 0;
+  const diyFTPctP    = p.diyAccounts    > 0 ? (p.diyFT    / p.diyAccounts)    * 100 : 0;
+  const nonDiyFTPctC = c.nonDiyAccounts > 0 ? (c.nonDiyFT / c.nonDiyAccounts) * 100 : 0;
+  const nonDiyFTPctP = p.nonDiyAccounts > 0 ? (p.nonDiyFT / p.nonDiyAccounts) * 100 : 0;
+  const rows = [
+    { label:'Accounts',     curr:c.accounts,        prev:p.accounts,        level:0, isPct:false },
+    { label:'DIY',          curr:c.diyAccounts,     prev:p.diyAccounts,     level:1, isPct:false },
+    { label:'FT Done',      curr:c.diyFT,           prev:p.diyFT,           level:2, isPct:false },
+    { label:'FT Done In %', curr:diyFTPctC,         prev:diyFTPctP,         level:2, isPct:true  },
+    { label:'Non DIY',      curr:c.nonDiyAccounts,  prev:p.nonDiyAccounts,  level:1, isPct:false },
+    { label:'FT Done',      curr:c.nonDiyFT,        prev:p.nonDiyFT,        level:2, isPct:false },
+    { label:'FT Done In %', curr:nonDiyFTPctC,      prev:nonDiyFTPctP,      level:2, isPct:true  },
+  ];
+  let html = '';
+  rows.forEach(r => {
+    const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
+    const currDisp = r.isPct ? `<span class="val-pct">${r.curr.toFixed(2)}%</span>` : `<span class="val-num">${r.curr.toLocaleString()}</span>`;
+    const prevDisp = r.isPct ? `<span class="val-pct">${r.prev.toFixed(2)}%</span>` : `<span class="val-num">${r.prev.toLocaleString()}</span>`;
+    const pad = r.level === 2 ? '&nbsp;&nbsp;&nbsp;&nbsp;↳ ' : r.level === 1 ? '&nbsp;&nbsp;▸ ' : '';
+    const cls = r.level > 0 ? ' row-sub' : '';
+    html += `<tr class="${cls}"><td>${pad}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
+  });
+  document.getElementById('d3-tbody').innerHTML = html;
+  document.getElementById('d3-badge').textContent = 'Current vs Previous';
+  const ins = [
+    `<strong>${c.accounts.toLocaleString()}</strong> accounts opened this month vs <strong>${p.accounts.toLocaleString()}</strong> previous`,
+    `DIY accounts: <strong>${c.diyAccounts.toLocaleString()}</strong> (${fmtPct(c.diyAccounts, c.accounts)}) this month`,
+    `Non-DIY accounts: <strong>${c.nonDiyAccounts.toLocaleString()}</strong> (${fmtPct(c.nonDiyAccounts, c.accounts)}) this month`,
+    `DIY FT conversion: <strong>${fmtPct(c.diyFT, c.diyAccounts)}</strong> current vs <strong>${fmtPct(p.diyFT, p.diyAccounts)}</strong> previous`,
+    `Non-DIY FT conversion: <strong>${fmtPct(c.nonDiyFT, c.nonDiyAccounts)}</strong> current vs <strong>${fmtPct(p.nonDiyFT, p.nonDiyAccounts)}</strong> previous`,
+  ];
+  renderInsights('d3', ins);
+  const d3ChartsEl = document.getElementById('d3-charts');
+  if (d3ChartsEl) d3ChartsEl.innerHTML = `
+    <div class="charts-grid">
+      <div class="chart-card"><h4>Accounts — DIY vs Non-DIY MOM</h4><canvas id="d3c1"></canvas></div>
+      <div class="chart-card"><h4>FT Done — DIY vs Non-DIY MOM</h4><canvas id="d3c2"></canvas></div>
+      <div class="chart-card"><h4>Current Month — Account Split</h4><canvas id="d3c3"></canvas></div>
+      <div class="chart-card"><h4>FT Done In % Trend — MOM</h4><canvas id="d3c4"></canvas></div>
+    </div>`;
+  setTimeout(() => {
+    makeBarChart('d3c1', ['DIY Accounts','Non-DIY Accounts'], [c.diyAccounts, c.nonDiyAccounts], [p.diyAccounts, p.nonDiyAccounts]);
+    makeBarChart('d3c2', ['DIY FT','Non-DIY FT'], [c.diyFT, c.nonDiyFT], [p.diyFT, p.nonDiyFT]);
+    makePieChart('d3c3', ['DIY','Non-DIY'], [c.diyAccounts, c.nonDiyAccounts], [CHART_COLORS.curr, CHART_COLORS.warn]);
+    makeLineChart('d3c4', ['Previous Month', 'Current Month'],
+      [parseFloat(diyFTPctP.toFixed(2)), parseFloat(diyFTPctC.toFixed(2))],
+      [parseFloat(nonDiyFTPctP.toFixed(2)), parseFloat(nonDiyFTPctC.toFixed(2))],
+      ['DIY FT %', 'Non-DIY FT %']);
+  }, 100);
+}
+
+function renderD4() {
+  const {d4} = dashData;
+  document.getElementById('d4-nodata').style.display = 'none';
+  showDateBanner('d4');
+  let totalCurr = 0, totalPrev = 0;
+  let html = '', topBucket = '', topBucketCount = 0;
+  VOLUME_BUCKETS.forEach(b => {
+    const curr = d4.curr[b] || 0;
+    const prev = d4.prev[b] || 0;
+    totalCurr += curr;
+    totalPrev += prev;
+    if (curr > topBucketCount) { topBucketCount = curr; topBucket = b; }
+    const ch = fmtChange(changePct(curr, prev));
+    html += `<tr><td>₹${b}</td><td><span class="val-num">${curr.toLocaleString()}</span></td><td><span class="val-num">${prev.toLocaleString()}</span></td><td>${ch.html}</td></tr>`;
+  });
+  const totalCh = fmtChange(changePct(totalCurr, totalPrev));
+  html += `<tr class="row-total"><td>Grand Total</td><td><span class="val-num">${totalCurr.toLocaleString()}</span></td><td><span class="val-num">${totalPrev.toLocaleString()}</span></td><td>${totalCh.html}</td></tr>`;
+  document.getElementById('d4-tbody').innerHTML = html;
+  document.getElementById('d4-badge').textContent = `${VOLUME_BUCKETS.length} buckets`;
+  const ins = [
+    `Total FTs: <strong>${totalCurr.toLocaleString()}</strong> current vs <strong>${totalPrev.toLocaleString()}</strong> previous — ${totalCh.html}`,
+    `Most common bucket this month: <strong>₹${topBucket}</strong> with <strong>${topBucketCount.toLocaleString()}</strong> FTs (${fmtPct(topBucketCount, totalCurr)})`,
+    `Low value trades (≤₹200): <strong>${((d4.curr['1 - 50']||0)+(d4.curr['51 - 100']||0)+(d4.curr['101 - 200']||0)).toLocaleString()}</strong> this month`,
+    `High value trades (>₹10K): <strong>${((d4.curr['10001 - 15000']||0)+(d4.curr['15001 - 20000']||0)+(d4.curr['20001 - 30000']||0)+(d4.curr['30001 - 40000']||0)+(d4.curr['40001 - 50000']||0)+(d4.curr['> 50000']||0)).toLocaleString()}</strong> this month`,
+    `Mid-range trades (₹1K–₹5K): <strong>${((d4.curr['1001 - 2000']||0)+(d4.curr['2001 - 3500']||0)+(d4.curr['3501 - 5000']||0)).toLocaleString()}</strong> this month`,
+  ];
+  renderInsights('d4', ins);
+  const d4ChartsEl = document.getElementById('d4-charts');
+  if (d4ChartsEl) d4ChartsEl.innerHTML = `
+    <div class="charts-grid">
+      <div class="chart-card" style="grid-column:1/-1"><h4>Volume Bucket Trend — Current vs Previous</h4><canvas id="d4c1"></canvas></div>
+      <div class="chart-card"><h4>Current Month — Top Buckets Share</h4><canvas id="d4c2"></canvas></div>
+      <div class="chart-card"><h4>Total FTs — MOM</h4><canvas id="d4c3"></canvas></div>
+    </div>`;
+  setTimeout(() => {
+    const activeBuckets = VOLUME_BUCKETS.filter(b => (d4.curr[b]||0) > 0 || (d4.prev[b]||0) > 0);
+    makeLineChart('d4c1', activeBuckets.map(b => '₹'+b), activeBuckets.map(b => d4.curr[b]||0), activeBuckets.map(b => d4.prev[b]||0), ['Current Month','Previous Month']);
+    const top6 = [...VOLUME_BUCKETS].filter(b => (d4.curr[b]||0) > 0)
+      .sort((a,b) => (d4.curr[b]||0) - (d4.curr[a]||0)).slice(0,6)
+      .sort((a,b) => VOLUME_BUCKETS.indexOf(a) - VOLUME_BUCKETS.indexOf(b));
+    makePieChart('d4c2', top6.map(b=>'₹'+b), top6.map(b=>d4.curr[b]||0), ['#4f8ef7','#4ff7b0','#f7a74f','#f74f7a','#a78bfa','#38bdf8']);
+    makeBarChart('d4c3', ['Total FTs'], [totalCurr], [totalPrev]);
+  }, 100);
+}
+
+const CHART_COLORS = {
+  curr: 'rgba(79,142,247,0.85)', prev: 'rgba(79,247,176,0.85)',
+  currBorder: '#4f8ef7', prevBorder: '#4ff7b0',
+  neg: 'rgba(247,79,122,0.85)', warn: 'rgba(247,167,79,0.85)',
+};
+let activeCharts = {};
+
+function destroyChart(id) {
+  if (activeCharts[id]) { activeCharts[id].destroy(); delete activeCharts[id]; }
+}
+
+function makeBarChart(canvasId, labels, currData, prevData) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  const datasets = [{ label:'Current Month', data:currData, backgroundColor:CHART_COLORS.curr, borderRadius:4 }];
+  if (prevData && prevData.length) datasets.push({ label:'Previous Month', data:prevData, backgroundColor:CHART_COLORS.prev, borderRadius:4 });
+  activeCharts[canvasId] = new Chart(ctx, {
+    type: 'bar', data: { labels, datasets },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#e8ecf5', font:{size:11} } } },
+      scales:{
+        x:{ ticks:{ color:'#8892a4', font:{size:11} }, grid:{ color:'#2a3045' } },
+        y:{ ticks:{ color:'#8892a4', font:{size:11} }, grid:{ color:'#2a3045' } }
+      }
+    }
+  });
+}
+
+function makePieChart(canvasId, labels, data, colors) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  activeCharts[canvasId] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets:[{ data, backgroundColor:colors, borderWidth:1, borderColor:'#161922' }] },
+    options: { responsive:true, maintainAspectRatio:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#e8ecf5', font:{size:11}, padding:12 } } } }
+  });
+}
+
+function makeLineChart(canvasId, labels, currData, prevData, seriesLabels) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  const lab = seriesLabels || ['Series 1','Series 2'];
+  const datasets = [{
+    label: lab[0], data: currData,
+    borderColor: CHART_COLORS.currBorder, backgroundColor:'rgba(79,142,247,0.1)',
+    tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7
+  }];
+  if (prevData && prevData.length) datasets.push({
+    label: lab[1] || 'Series 2', data: prevData,
+    borderColor: CHART_COLORS.prevBorder, backgroundColor:'rgba(79,247,176,0.1)',
+    tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7
+  });
+  activeCharts[canvasId] = new Chart(ctx, {
+    type: 'line', data: { labels, datasets },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#e8ecf5', font:{size:11} } } },
+      scales:{
+        x:{ ticks:{ color:'#8892a4' }, grid:{ color:'#2a3045' } },
+        y:{ ticks:{ color:'#8892a4' }, grid:{ color:'#2a3045' } }
+      }
+    }
+  });
+}
+
+function renderInsights(id, ins) {
+  const box  = document.getElementById(id+'-insights');
+  const grid = document.getElementById(id+'-ins-grid');
+  grid.innerHTML = ins.map((t,i) => `<div class="icard"><div class="inum">Point 0${i+1}</div><div class="itext">${t}</div></div>`).join('');
+  box.style.display = 'block';
+}
+
+function exportDash(id) {
+  if (!dashData) { alert('No data to export.'); return; }
+  const wb    = XLSX.utils.book_new();
+  const table = document.querySelector(`#sec-${id} table`);
+  if (!table) return;
+  const ws   = XLSX.utils.table_to_sheet(table);
+  const names = {d1:'Leads_Funnel', d2:'Disposed_Analysis', d3:'DIY_NonDIY', d4:'Volume_Bucket'};
+  XLSX.utils.book_append_sheet(wb, ws, names[id] || id);
+  XLSX.writeFile(wb, `MOM_${names[id]}_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function updateCardStatuses() {
+  ['d1','d2','d3','d4'].forEach(id => {
+    const el = document.getElementById('cardStatus-'+id);
+    if (el) { el.className = 'card-status ready'; el.textContent = '✓ Ready'; }
+  });
+  updateHomeSummaries();
+}
+
+function updateHomeSummaries() {
+  if (!dashData) return;
+  const d1 = dashData.d1;
+  const convCurr = d1.curr.leads > 0 ? (d1.curr.acOpen / d1.curr.leads * 100) : 0;
+  const convPrev = d1.prev.leads > 0 ? (d1.prev.acOpen / d1.prev.leads * 100) : 0;
+  const convDiff = convCurr - convPrev;
+  const convSign = convDiff >= 0 ? '+' : '';
+  const convColor = convDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
+  setSummary('d1', `Conv %: <strong>${convCurr.toFixed(2)}%</strong> vs <strong>${convPrev.toFixed(2)}%</strong> prev &nbsp;<span style="color:${convColor};font-family:Space Mono,monospace;font-size:11px">${convSign}${convDiff.toFixed(2)}%</span>`);
+  const d2 = dashData.d2;
+  const dispC = d2.curr.leads > 0 ? (d2.curr.disposed / d2.curr.leads * 100) : 0;
+  const dispP = d2.prev.leads > 0 ? (d2.prev.disposed / d2.prev.leads * 100) : 0;
+  const dispDiff = dispC - dispP;
+  const dispSign = dispDiff >= 0 ? '+' : '';
+  const dispColor = dispDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
+  setSummary('d2', `Disposed %: <strong>${dispC.toFixed(2)}%</strong> vs <strong>${dispP.toFixed(2)}%</strong> prev &nbsp;<span style="color:${dispColor};font-family:Space Mono,monospace;font-size:11px">${dispSign}${dispDiff.toFixed(2)}%</span>`);
+  const d3 = dashData.d3;
+  const ftPctC = d3.curr.accounts > 0 ? ((d3.curr.diyFT + d3.curr.nonDiyFT) / d3.curr.accounts * 100) : 0;
+  const ftPctP = d3.prev.accounts > 0 ? ((d3.prev.diyFT + d3.prev.nonDiyFT) / d3.prev.accounts * 100) : 0;
+  const ftDiff = ftPctC - ftPctP;
+  const ftSign = ftDiff >= 0 ? '+' : '';
+  const ftColor = ftDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
+  setSummary('d3', `FT Done %: <strong>${ftPctC.toFixed(2)}%</strong> vs <strong>${ftPctP.toFixed(2)}%</strong> prev &nbsp;<span style="color:${ftColor};font-family:Space Mono,monospace;font-size:11px">${ftSign}${ftDiff.toFixed(2)}%</span>`);
+  const d4 = dashData.d4;
+  let topBucket = '', topCount = 0;
+  VOLUME_BUCKETS.forEach(b => { if ((d4.curr[b]||0) > topCount) { topCount = d4.curr[b]; topBucket = b; } });
+  const totalFT = VOLUME_BUCKETS.reduce((s,b) => s + (d4.curr[b]||0), 0);
+  const topPct = totalFT > 0 ? (topCount / totalFT * 100).toFixed(1) : '0.0';
+  setSummary('d4', `Top bucket: <strong>₹${topBucket}</strong> — <strong>${topCount.toLocaleString()}</strong> FTs (${topPct}% of total)`);
+}
+
+function setSummary(dashId, html) {
+  let el = document.getElementById('home-summary-'+dashId);
+  if (!el) {
+    const card = document.querySelector(`#sec-home [onclick="openDash('${dashId}')"]`);
+    if (!card) return;
+    el = document.createElement('div');
+    el.id = 'home-summary-' + dashId;
+    el.style.cssText = 'margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.5';
+    card.appendChild(el);
+  }
+  el.innerHTML = html;
+}
+
+function updateHomeBar() {
+  const bar = document.getElementById('homeBar');
+  if (dashData) {
+    bar.className = 'bar ok';
+    bar.innerHTML = `✓ Data loaded — Last processed: ${dashData.processedAt}`;
+    const ts = document.getElementById('homeTS');
+    ts.style.display = 'block';
+    ts.textContent = '🕐 Last updated: ' + dashData.processedAt;
+  } else {
+    bar.className = 'bar info';
+    bar.innerHTML = 'No data yet — go to Admin Upload to process files.';
+  }
+}
+
+function clearData() {
+  if (!confirm('Clear all processed data? You will need to re-upload files.')) return;
+  localStorage.removeItem('ftMOMDashboard');
+  dashData   = null;
+  leadsAgg   = [null, null];
+  ftAgg      = [null, null];
+  filesReady = {l0:false, l1:false, f0:false, f1:false};
+  ['d1','d2','d3','d4'].forEach(id => {
+    const el = document.getElementById('cardStatus-'+id);
+    if (el) { el.className = 'card-status waiting'; el.textContent = 'No Data'; }
+  });
+  updateHomeBar();
+  setBar('Data cleared. Upload new files to continue.', 'info');
+  document.getElementById('logBox').innerHTML = '';
+  document.getElementById('progWrap').style.display  = 'none';
+  document.getElementById('progLabel').style.display = 'none';
+  document.getElementById('procBtns').style.display  = 'none';
+  lg('All data cleared', 'warn');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const saved = localStorage.getItem('ftMOMDashboard');
+    if (saved) {
+      dashData = JSON.parse(saved);
+      lg('Data loaded from previous session', 'ok');
+      updateCardStatuses();
+    }
+  } catch(e) {
+    console.warn('Could not load from localStorage:', e);
+  }
+  updateHomeBar();
+  loadFromGitHub();
+});
+
+async function publishToGitHub(data) {
+  lg('Publishing to Cloudflare...', 'info');
+  try {
+    const res = await fetch(`${CF_WORKER_URL}/publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': adminSecret },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if (res.ok) {
+      lg('✓ Published successfully — all viewers will see updated data instantly', 'ok');
+    } else {
+      lg(`Publish failed: ${result.error}`, 'err');
+    }
+  } catch(e) {
+    lg('Publish error: ' + e.message, 'err');
+  }
+}
+
+async function loadFromGitHub() {
+  try {
+    const res = await fetch(`${CF_WORKER_URL}/data`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.d1) {
+        dashData = data;
+        updateCardStatuses();
+        updateHomeBar();
+        lg('Data loaded from Cloudflare', 'ok');
+        return;
+      }
+    }
+  } catch(e) {
+    // fall through to localStorage
+  }
+}
+</script>
 </body>
 </html>
