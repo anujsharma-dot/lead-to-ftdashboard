@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -34,15 +35,13 @@ header h1{font-size:18px;font-weight:600;letter-spacing:-.02em}
 .dash-card:hover::before{transform:scaleX(1)}
 .dash-card.c1::before{background:var(--accent)}
 .dash-card.c2::before{background:var(--accent2)}
-.dash-card.c3::before{background:var(--accent3)}
-.dash-card.c4::before{background:var(--accent5)}
+.dash-card.c3::before{background:var(--accent5)}
 .dash-card .card-icon{font-size:28px;margin-bottom:12px}
 .dash-card h3{font-size:15px;font-weight:700;margin-bottom:6px}
 .dash-card p{font-size:12px;color:var(--text-dim);line-height:1.6}
 .dash-card .card-status{position:absolute;top:14px;right:14px;font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;border-radius:10px}
 .dash-card .card-status.ready{background:rgba(79,247,176,.1);border:1px solid var(--accent3);color:var(--accent3)}
 .dash-card .card-status.waiting{background:rgba(247,167,79,.1);border:1px solid var(--accent2);color:var(--accent2)}
-.dash-view{display:none}.dash-view.show{display:block}
 .view-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .back-btn{padding:8px 16px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
 .back-btn:hover{border-color:var(--accent);color:var(--text)}
@@ -145,11 +144,12 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
 
 <header>
   <div class="logo">DAD <span>///</span> MOM Analytics</div>
-  <h1>📊 FT Month-over-Month Dashboard</h1>
+  <h1>📊 Lead to FT Month-over-Month Dashboard</h1>
   <div class="logo" style="color:var(--text-dim)">Motilal Oswal</div>
 </header>
 
 <!-- PW MODAL -->
+
 <div class="modal" id="pwModal">
   <div class="mbox">
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
@@ -164,16 +164,19 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
 
 <div class="main">
 
+  <!-- TOP NAVIGATION TABS -->
+
   <div class="top-tabs">
     <div class="ttab active" id="ttab-home" onclick="showTopTab('home')">🏠 Home</div>
     <div class="ttab" id="ttab-d1" onclick="openDash('d1')">📋 D1 — Leads Funnel</div>
     <div class="ttab" id="ttab-d2" onclick="openDash('d2')">🔄 D2 — Disposed</div>
-    <div class="ttab" id="ttab-d3" onclick="openDash('d3')">🎯 D3 — DIY vs Non-DIY</div>
-    <div class="ttab" id="ttab-d4" onclick="openDash('d4')">💰 D4 — Volume Bucket</div>
+    <div class="ttab" id="ttab-d3" onclick="openDash('d3')">💰 D3 — Volume Bucket</div>
+    <div class="ttab" id="ttab-d4" onclick="openDash('d4')">📊 D4 — Margin Bucket</div>
     <div class="ttab locked-tab" id="ttab-admin" onclick="askPW()">Admin Upload</div>
   </div>
 
-  <!-- HOME -->
+  <!-- HOME SECTION -->
+
   <div class="section show" id="sec-home">
     <div class="bar info" id="homeBar"><span class="spin"></span> Loading data...</div>
     <div class="ts-label" id="homeTS" style="display:none"></div>
@@ -192,20 +195,21 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
       </div>
       <div class="dash-card c3" onclick="openDash('d3')">
         <div class="card-status waiting" id="cardStatus-d3">No Data</div>
-        <div class="card-icon">🎯</div>
-        <h3>Dashboard 3 — DIY vs Non-DIY</h3>
-        <p>Accounts split by DIY/Non-DIY with FT Done count and percentage MOM comparison</p>
-      </div>
-      <div class="dash-card" style="--accent:var(--accent5)" onclick="openDash('d4')">
-        <div class="card-status waiting" id="cardStatus-d4">No Data</div>
         <div class="card-icon">💰</div>
-        <h3>Dashboard 4 — Volume Bucket</h3>
+        <h3>Dashboard 3 — Volume Bucket</h3>
         <p>First trade volume distribution across 18 brackets with MOM comparison</p>
+      </div>
+      <div class="dash-card" style="--accent:var(--accent4)" onclick="openDash('d4')">
+        <div class="card-status waiting" id="cardStatus-d4">No Data</div>
+        <div class="card-icon">📊</div>
+        <h3>Dashboard 4 — Margin Bucket</h3>
+        <p>T+15 & T+30 Gross Margin distribution across 13 buckets with MOM comparison</p>
       </div>
     </div>
   </div>
 
-  <!-- D1 -->
+  <!-- D1: LEADS FUNNEL -->
+
   <div class="section" id="sec-d1">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -230,7 +234,8 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
     <div class="no-data" id="d1-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
   </div>
 
-  <!-- D2 -->
+  <!-- D2: DISPOSED -->
+
   <div class="section" id="sec-d2">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -255,11 +260,12 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
     <div class="no-data" id="d2-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
   </div>
 
-  <!-- D3 -->
+  <!-- D3: VOLUME BUCKET (formerly D4) -->
+
   <div class="section" id="sec-d3">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
-      <h2>🎯 Dashboard 3 — DIY vs Non-DIY MOM</h2>
+      <h2>💰 Dashboard 3 — Volume Bucket MOM</h2>
     </div>
     <div class="date-banner" id="d3-date-banner"></div>
     <div id="d3-insights" class="insights-box" style="display:none">
@@ -269,10 +275,10 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
     <div id="d3-charts"></div>
     <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d3')">⬇ Export to Excel</button></div>
     <div class="mom-table-card">
-      <div class="mom-table-hdr"><h3>DIY vs Non-DIY — Month-over-Month</h3><div class="badge" id="d3-badge"></div></div>
+      <div class="mom-table-hdr"><h3>Volume Bucket Distribution — Month-over-Month</h3><div class="badge" id="d3-badge"></div></div>
       <div class="tscroll">
         <table>
-          <thead><tr><th>Particular</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+          <thead><tr><th>FT Volume Bucket (₹)</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
           <tbody id="d3-tbody"></tbody>
         </table>
       </div>
@@ -280,11 +286,12 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
     <div class="no-data" id="d3-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
   </div>
 
-  <!-- D4 -->
+  <!-- D4: MARGIN BUCKET -->
+
   <div class="section" id="sec-d4">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
-      <h2>💰 Dashboard 4 — Volume Bucket MOM</h2>
+      <h2>📊 Dashboard 4 — Margin Bucket MOM</h2>
     </div>
     <div class="date-banner" id="d4-date-banner"></div>
     <div id="d4-insights" class="insights-box" style="display:none">
@@ -293,87 +300,106 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
     </div>
     <div id="d4-charts"></div>
     <div class="export-row"><button class="btn btn-orange" onclick="exportDash('d4')">⬇ Export to Excel</button></div>
-    <div class="mom-table-card">
-      <div class="mom-table-hdr"><h3>Volume Bucket Distribution — Month-over-Month</h3><div class="badge" id="d4-badge"></div></div>
-      <div class="tscroll">
-        <table>
-          <thead><tr><th>FT Volume Bucket (₹)</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
-          <tbody id="d4-tbody"></tbody>
-        </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+      <div class="mom-table-card" style="margin-bottom:0">
+        <div class="mom-table-hdr"><h3>T+15 Gross Margin — MOM</h3><div class="badge" id="d4-t15-badge"></div></div>
+        <div class="tscroll">
+          <table>
+            <thead><tr><th>T+15 Margin Bucket (₹)</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+            <tbody id="d4-t15-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mom-table-card" style="margin-bottom:0">
+        <div class="mom-table-hdr"><h3>T+30 Gross Margin — MOM</h3><div class="badge" id="d4-t30-badge"></div></div>
+        <div class="tscroll">
+          <table>
+            <thead><tr><th>T+30 Margin Bucket (₹)</th><th>Current Month</th><th>Previous Month</th><th>Change %</th></tr></thead>
+            <tbody id="d4-t30-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="no-data" id="d4-nodata"><div class="nd-icon">📭</div><p>No data available. Please upload files from Admin Upload.</p></div>
   </div>
 
-  <!-- ADMIN -->
+  <!-- ADMIN UPLOAD -->
+
   <div class="section" id="sec-admin">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
       <h2>🔒 Admin Upload</h2>
     </div>
 
-    <div class="sub-tabs">
-      <div class="stab active" id="stab-leads" onclick="showSubTab('leads')">📁 Leads File</div>
-      <div class="stab" id="stab-ft" onclick="showSubTab('ft')">📈 FT Raw File</div>
-    </div>
+```
+<div class="sub-tabs">
+  <div class="stab active" id="stab-leads" onclick="showSubTab('leads')">📁 Leads File</div>
+  <div class="stab" id="stab-ft" onclick="showSubTab('ft')">📈 FT Raw File</div>
+</div>
 
-    <div id="sub-leads">
-      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month Leads files.</p>
-      <div class="uploads-grid">
-        <div class="uzone" id="lz1">
-          <input type="file" id="lf1" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,1)"/>
-          <div class="ico">📂</div>
-          <h3>Leads — Current Month</h3>
-          <div class="fbadge" id="lf1-badge"></div>
-        </div>
-        <div class="uzone" id="lz2">
-          <input type="file" id="lf2" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,2)"/>
-          <div class="ico">🗂️</div>
-          <h3>Leads — Previous Month</h3>
-          <div class="fbadge" id="lf2-badge"></div>
-        </div>
-      </div>
+<!-- LEADS UPLOAD -->
+<div id="sub-leads">
+  <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month Leads files.</p>
+  <div class="uploads-grid">
+    <div class="uzone" id="lz1">
+      <input type="file" id="lf1" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,1)"/>
+      <div class="ico">📂</div>
+      <h3>Leads — Current Month</h3>
+      <div class="fbadge" id="lf1-badge"></div>
     </div>
+    <div class="uzone" id="lz2">
+      <input type="file" id="lf2" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,2)"/>
+      <div class="ico">🗂️</div>
+      <h3>Leads — Previous Month</h3>
+      <div class="fbadge" id="lf2-badge"></div>
+    </div>
+  </div>
+</div>
 
-    <div id="sub-ft" style="display:none">
-      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month FT Raw files.</p>
-      <div class="uploads-grid">
-        <div class="uzone" id="fz1">
-          <input type="file" id="ff1" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,1)"/>
-          <div class="ico">📂</div>
-          <h3>FT Raw — Current Month</h3>
-          <div class="fbadge" id="ff1-badge"></div>
-        </div>
-        <div class="uzone" id="fz2">
-          <input type="file" id="ff2" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,2)"/>
-          <div class="ico">🗂️</div>
-          <h3>FT Raw — Previous Month</h3>
-          <div class="fbadge" id="ff2-badge"></div>
-        </div>
-      </div>
+<!-- FT UPLOAD -->
+<div id="sub-ft" style="display:none">
+  <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month FT Raw files.</p>
+  <div class="uploads-grid">
+    <div class="uzone" id="fz1">
+      <input type="file" id="ff1" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,1)"/>
+      <div class="ico">📂</div>
+      <h3>FT Raw — Current Month</h3>
+      <div class="fbadge" id="ff1-badge"></div>
     </div>
+    <div class="uzone" id="fz2">
+      <input type="file" id="ff2" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,2)"/>
+      <div class="ico">🗂️</div>
+      <h3>FT Raw — Previous Month</h3>
+      <div class="fbadge" id="ff2-badge"></div>
+    </div>
+  </div>
+</div>
 
-    <div class="bar info" id="adminBar">⏳ Upload Leads and FT files to continue.</div>
-    <div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
-    <div class="prog-label" id="progLabel" style="display:none"></div>
-    <div class="logbox" id="logBox"></div>
-    <div class="btns" id="procBtns" style="display:none">
-      <button class="btn btn-green" id="procBtn" onclick="runProcess()">⚡ Process & Generate Dashboards</button>
-      <button class="btn btn-red" onclick="clearData()">🗑️ Clear All Data</button>
-    </div>
+<div class="bar info" id="adminBar">⏳ Upload Leads and FT files to continue.</div>
+<div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
+<div class="prog-label" id="progLabel" style="display:none"></div>
+<div class="logbox" id="logBox"></div>
+<div class="btns" id="procBtns" style="display:none">
+  <button class="btn btn-green" id="procBtn" onclick="runProcess()">⚡ Process & Generate Dashboards</button>
+  <button class="btn btn-red" onclick="clearData()">🗑️ Clear All Data</button>
+</div>
+```
+
   </div>
 
 </div><!-- /main -->
 
 <script>
-const ADMIN_PW = 'jayram@123';
-const CF_WORKER_URL = 'https://lead-to-ft-dashboard-api.anuj-sharma.workers.dev';
-let adminSecret = 'DAD@MOM2026!';
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const ADMIN_PW      = 'jayram@123';
+const CF_WORKER_URL = 'https://lead-to-ft-dashboard-api.SOMETHING.workers.dev';
+let adminSecret     = 'DAD@MOM2026!';
 
-let unlocked  = false;
-let dashData  = null;
-let leadsAgg  = [null, null];
-let ftAgg     = [null, null];
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let unlocked   = false;
+let dashData   = null;
+let leadsAgg   = [null, null];
+let ftAgg      = [null, null];
 let filesReady = {l0:false, l1:false, f0:false, f1:false};
 
 const VOLUME_BUCKETS = [
@@ -383,6 +409,13 @@ const VOLUME_BUCKETS = [
   '20001 - 30000','30001 - 40000','40001 - 50000','> 50000'
 ];
 
+const MARGIN_BUCKETS = [
+  '0','1 - 499','500 - 999','1000 - 4999','5000 - 9999',
+  '10000 - 24999','25000 - 49999','50000 - 99999',
+  '1L - 2.99L','3L - 4.99L','5L - 7.49L','7.50L - 9.99L','>= 10L'
+];
+
+// ─── PASSWORD ─────────────────────────────────────────────────────────────────
 function askPW() {
   if (unlocked) { showTopTab('admin'); return; }
   document.getElementById('pwModal').classList.add('show');
@@ -406,6 +439,7 @@ function checkPW() {
 }
 function closePW() { document.getElementById('pwModal').classList.remove('show'); }
 
+// ─── NAV ──────────────────────────────────────────────────────────────────────
 const SECTIONS = ['home','d1','d2','d3','d4','admin'];
 function showTopTab(id) {
   SECTIONS.forEach(s => {
@@ -423,6 +457,7 @@ function openDash(id) {
   if (dashData) renderDash(id);
 }
 
+// ─── SUB TABS ─────────────────────────────────────────────────────────────────
 function showSubTab(t) {
   document.getElementById('sub-leads').style.display = t === 'leads' ? 'block' : 'none';
   document.getElementById('sub-ft').style.display    = t === 'ft'    ? 'block' : 'none';
@@ -430,6 +465,7 @@ function showSubTab(t) {
   document.getElementById('stab-ft').classList.toggle('active', t === 'ft');
 }
 
+// ─── LOGGING ──────────────────────────────────────────────────────────────────
 function lg(msg, type='info') {
   const box = document.getElementById('logBox');
   const d = document.createElement('div');
@@ -452,6 +488,7 @@ function setProgress(pct, label) {
 }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ─── DATE PARSING ─────────────────────────────────────────────────────────────
 function parseDate(raw) {
   if (!raw && raw !== 0) return null;
   const s = String(raw).trim();
@@ -489,6 +526,7 @@ function parseDate(raw) {
   return null;
 }
 
+// ─── FILE HANDLING ────────────────────────────────────────────────────────────
 async function handleLeadFile(e, n) {
   const f = e.target.files[0];
   if (!f) return;
@@ -496,7 +534,7 @@ async function handleLeadFile(e, n) {
   leadsAgg[idx] = null;
   filesReady['l'+idx] = false;
   lg(`Reading Leads file ${n}: ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)`, 'info');
-  setBar(`Processing ${f.name}...`, 'working');
+  setBar(`Processing ${f.name}... (large files may take a moment)`, 'working');
   disableInputs(true);
   try {
     if (f.name.match(/\.csv$/i)) {
@@ -540,14 +578,14 @@ async function handleFTFile(e, n) {
   ftAgg[idx] = null;
   filesReady['f'+idx] = false;
   lg(`Reading FT file ${n}: ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)`, 'info');
-  setBar(`Processing ${f.name}...`, 'working');
+  setBar(`Processing ${f.name}... (large files may take a moment)`, 'working');
   disableInputs(true);
   try {
     if (f.name.match(/\.csv$/i)) {
       const agg = await streamAggregateFT(f, `FT ${n}`, idx === 0 ? 10 : 30);
       ftAgg[idx] = agg; filesReady['f'+idx] = true;
       markZone('fz'+n, 'ff'+n+'-badge', f.name, agg.rawTotal);
-      lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1`, 'ok');
+      lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1 (Activation + FT same month)`, 'ok');
     } else {
       const wb = await readWorkbookLazy(f);
       if (wb.SheetNames.length >= 2 && n === 1) {
@@ -565,7 +603,7 @@ async function handleFTFile(e, n) {
         const agg  = aggregateFTRows(rows);
         ftAgg[idx] = agg; filesReady['f'+idx] = true;
         markZone('fz'+n, 'ff'+n+'-badge', f.name, agg.rawTotal);
-        lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1`, 'ok');
+        lg(`FT file ${n} aggregated: ${agg.rawTotal.toLocaleString()} total rows | ${agg.total.toLocaleString()} valid for D1 (Activation + FT same month)`, 'ok');
       }
     }
     checkAllReady();
@@ -588,28 +626,29 @@ function readWorkbookLazy(file) {
   });
 }
 
+// ─── AGG FACTORIES ────────────────────────────────────────────────────────────
 function newLeadAgg() {
   return {
     leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0,
     disposed:0, nonDisposed:0,
     clientCodes: new Set(), diyClientCodes: new Set(), nonDiyClientCodes: new Set(),
     diyAcClientCodes: new Set(), nonDiyAcClientCodes: new Set(),
-    minDate: null, maxDate: null,
-    byDay: {}, byMonthDay: {}
+    minDate: null, maxDate: null, byDay: {}, byMonthDay: {}
   };
 }
-
 function newFTAgg() {
   const agg = {
     total:0, rawTotal:0,
     clientCodes: new Set(), allTradeClientCodes: new Set(),
-    buckets:{}, minDate:null, maxDate:null,
+    buckets:{}, t15Buckets:{}, t30Buckets:{}, minDate:null, maxDate:null,
     byDay:{}, byMonthDay:{}, allTradeByMonthDay:{}
   };
   VOLUME_BUCKETS.forEach(b => agg.buckets[b] = 0);
+  MARGIN_BUCKETS.forEach(b => { agg.t15Buckets[b] = 0; agg.t30Buckets[b] = 0; });
   return agg;
 }
 
+// ─── STREAM & AGGREGATE LEADS CSV ─────────────────────────────────────────────
 async function streamAggregateLead(file, label, startPct) {
   const agg = newLeadAgg();
   let headers = null, colIdx = {};
@@ -625,14 +664,17 @@ async function streamAggregateLead(file, label, startPct) {
     const get = col => colIdx[col] !== undefined ? (cells[colIdx[col]] || '').toString().trim() : '';
     const regDateRaw = get('Registration Date');
     const parsedRegDate = parseDate(regDateRaw);
-    if (!parsedRegDate) { if (skipped <= 3) lg(`Skipped row — regDateRaw value: "${regDateRaw}"`, 'warn'); skipped++; return; }
+    if (!parsedRegDate) {
+      if (skipped <= 3) lg(`Skipped row — regDateRaw value: "${regDateRaw}"`, 'warn');
+      skipped++; return;
+    }
     const parsedDate = parsedRegDate;
     const dayOfMonth = parsedDate.getDate();
     if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
     if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
     agg.leads++;
-    const leadStage = get('Lead Stage').toString().trim().toUpperCase();
-    const acOpened  = leadStage === 'C6' || leadStage === 'C7';
+    const leadStage  = get('Lead Stage').toString().trim().toUpperCase();
+    const acOpened   = leadStage === 'C6' || leadStage === 'C7';
     const diy        = isDIYVal(get('isDIY'));
     const disposition = get('Disposition');
     const clientCode = (get('Client Code') || get('ClientCode') || get('partycode')).toString().trim().toUpperCase();
@@ -693,13 +735,10 @@ async function streamAggregateLead(file, label, startPct) {
       if (!headers) {
         headers = cells.map(h => h.trim().replace(/^"|"$/g,''));
         headers.forEach((h,i) => { colIdx[h] = i; });
-        const acCol = headers.find(h => h.toLowerCase().includes('account opening'));
+        const acCol     = headers.find(h => h.toLowerCase().includes('account opening'));
         const clientCol = headers.find(h => h.toLowerCase().includes('client code'));
         lg(`${label} — ${headers.length} cols | AC col: "${acCol}" | Client col: "${clientCol}"`, 'info');
-      } else {
-        processRow(cells);
-        rowCount++;
-      }
+      } else { processRow(cells); rowCount++; }
     }
     if (rowCount % 5000 === 0 && rowCount > 0) {
       const pct = startPct + Math.floor((bytesRead / totalSize) * 15);
@@ -712,6 +751,7 @@ async function streamAggregateLead(file, label, startPct) {
   return agg;
 }
 
+// ─── STREAM & AGGREGATE FT CSV ────────────────────────────────────────────────
 async function streamAggregateFT(file, label, startPct) {
   const agg = newFTAgg();
   let headers = null, colIdx = {};
@@ -733,16 +773,24 @@ async function streamAggregateFT(file, label, startPct) {
     const activDateRaw = get('Activation Date') || get('ActivationDate');
     const parsedDate   = parseDate(ftDateRaw);
     const activDate    = parseDate(activDateRaw);
+    // bothSameMonth: Activation Date and First Trade Date New are in same month+year
     const bothSameMonth = parsedDate && activDate &&
       parsedDate.getMonth()    === activDate.getMonth() &&
       parsedDate.getFullYear() === activDate.getFullYear();
-    if (bucket) agg.buckets[bucket]++;
+    // D3 (Volume Bucket): bothSameMonth only
+    if (bothSameMonth && bucket) agg.buckets[bucket]++;
+    // D4 (Margin Bucket): bothSameMonth only
+    if (bothSameMonth) {
+      const t15b = getMarginBucket(get('T+15 Gross') || get('T+15Gross') || '');
+      const t30b = getMarginBucket(get('T+30 Gross') || get('T+30Gross') || '');
+      if (t15b) agg.t15Buckets[t15b]++;
+      if (t30b) agg.t30Buckets[t30b]++;
+    }
     if (parsedDate) {
       if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
       if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
-      const day   = parsedDate.getDate();
-      const month = parsedDate.getMonth();
-      const year  = parsedDate.getFullYear();
+      const day = parsedDate.getDate(), month = parsedDate.getMonth(), year = parsedDate.getFullYear();
+      // byDay — ALL rows, used for day-capping
       if (!agg.byDay[day]) {
         agg.byDay[day] = { total:0, codes: new Set(), buckets:{} };
         VOLUME_BUCKETS.forEach(b => agg.byDay[day].buckets[b] = 0);
@@ -750,6 +798,7 @@ async function streamAggregateFT(file, label, startPct) {
       agg.byDay[day].total++;
       if (code) agg.byDay[day].codes.add(code);
       if (bucket) agg.byDay[day].buckets[bucket]++;
+      // D1: byMonthDay + clientCodes — only when bothSameMonth
       if (bothSameMonth) {
         agg.total++;
         if (code) agg.clientCodes.add(code);
@@ -762,6 +811,7 @@ async function streamAggregateFT(file, label, startPct) {
         if (code) agg.byMonthDay[mdKey].codes.add(code);
         if (bucket) agg.byMonthDay[mdKey].buckets[bucket]++;
       }
+      // allTrade: all rows, no Activation Date check (used for allTradeByMonthDay)
       if (code) agg.allTradeClientCodes.add(code);
       const atKey = `${year}_${month}_${day}`;
       if (!agg.allTradeByMonthDay[atKey]) agg.allTradeByMonthDay[atKey] = { total:0, codes: new Set() };
@@ -787,10 +837,7 @@ async function streamAggregateFT(file, label, startPct) {
         const activCol  = headers.find(h => h.toLowerCase().includes('activation'));
         const ftDateCol = headers.find(h => h.toLowerCase().includes('first trade date new') || h.toLowerCase().includes('firsttradedate'));
         lg(`${label} — ${headers.length} cols | Activation: "${activCol}" | FT Date: "${ftDateCol}"`, 'info');
-      } else {
-        processRow(cells);
-        rowCount++;
-      }
+      } else { processRow(cells); rowCount++; }
     }
     if (rowCount % 5000 === 0 && rowCount > 0) {
       const pct = startPct + Math.floor((bytesRead / totalSize) * 15);
@@ -803,15 +850,14 @@ async function streamAggregateFT(file, label, startPct) {
   return agg;
 }
 
+// ─── AGGREGATE FROM EXCEL ROWS ────────────────────────────────────────────────
 function aggregateLeadRows(rows) {
   const agg = newLeadAgg();
   for (const row of rows) {
     const regDateRaw = String(row['Registration Date'] || row['RegistrationDate'] || '').trim();
     const parsedDate = parseDate(regDateRaw);
     if (!parsedDate) continue;
-    const dayOfMonth = parsedDate.getDate();
-    const lMonth     = parsedDate.getMonth();
-    const lYear      = parsedDate.getFullYear();
+    const dayOfMonth = parsedDate.getDate(), lMonth = parsedDate.getMonth(), lYear = parsedDate.getFullYear();
     if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
     if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
     agg.leads++;
@@ -840,7 +886,7 @@ function aggregateLeadRows(rows) {
     if (code) {
       bkt.codes.add(code);
       if (diy) bkt.diyCodes.add(code); else bkt.nonDiyCodes.add(code);
-      if (acOpened && diy)  bkt.diyAcCodes.add(code);
+      if (acOpened && diy) bkt.diyAcCodes.add(code);
       if (acOpened && !diy) bkt.nonDiyAcCodes.add(code);
     }
     const mdKey = `${lYear}_${lMonth}_${dayOfMonth}`;
@@ -856,7 +902,7 @@ function aggregateLeadRows(rows) {
     if (code) {
       mbkt.codes.add(code);
       if (diy) mbkt.diyCodes.add(code); else mbkt.nonDiyCodes.add(code);
-      if (acOpened && diy)  mbkt.diyAcCodes.add(code);
+      if (acOpened && diy) mbkt.diyAcCodes.add(code);
       if (acOpened && !diy) mbkt.nonDiyAcCodes.add(code);
     }
   }
@@ -879,9 +925,7 @@ function aggregateFTRows(rows) {
     if (parsedDate) {
       if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
       if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
-      const day   = parsedDate.getDate();
-      const month = parsedDate.getMonth();
-      const year  = parsedDate.getFullYear();
+      const day = parsedDate.getDate(), month = parsedDate.getMonth(), year = parsedDate.getFullYear();
       if (!agg.byDay[day]) {
         agg.byDay[day] = { total:0, codes: new Set(), buckets:{} };
         VOLUME_BUCKETS.forEach(b => agg.byDay[day].buckets[b] = 0);
@@ -892,6 +936,10 @@ function aggregateFTRows(rows) {
       if (bothSameMonth) {
         agg.total++;
         if (code) agg.clientCodes.add(code);
+        const t15b = getMarginBucket(String(row['T+15 Gross'] ?? ''));
+        const t30b = getMarginBucket(String(row['T+30 Gross'] ?? ''));
+        if (t15b !== '') agg.t15Buckets[t15b]++;
+        if (t30b !== '') agg.t30Buckets[t30b]++;
         const mdKey = `${year}_${month}_${day}`;
         if (!agg.byMonthDay[mdKey]) {
           agg.byMonthDay[mdKey] = { total:0, codes: new Set(), buckets:{} };
@@ -912,9 +960,9 @@ function aggregateFTRows(rows) {
   return agg;
 }
 
+// ─── DAY-CAP COLLAPSE HELPERS ─────────────────────────────────────────────────
 function getDaysWithData(agg) {
-  return Object.keys(agg.byDay)
-    .map(Number)
+  return Object.keys(agg.byDay).map(Number)
     .filter(d => agg.byDay[d] && (agg.byDay[d].leads > 0 || agg.byDay[d].total > 0 || agg.byDay[d].codes?.size > 0))
     .sort((a,b) => a - b);
 }
@@ -949,8 +997,7 @@ function getDaysForMonth(agg, month, year) {
 
 function collapseLeadAgg(agg, allowedDays, targetMonth, targetYear) {
   const out = {
-    leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0,
-    disposed:0, nonDisposed:0,
+    leads:0, acOpen:0, diyAcOpen:0, nonDiyAcOpen:0, disposed:0, nonDisposed:0,
     clientCodes: new Set(), diyClientCodes: new Set(), nonDiyClientCodes: new Set(),
     diyAcClientCodes: new Set(), nonDiyAcClientCodes: new Set()
   };
@@ -959,12 +1006,9 @@ function collapseLeadAgg(agg, allowedDays, targetMonth, targetYear) {
       ? `${targetYear}_${targetMonth}_${d}` : null;
     const b = key ? (agg.byMonthDay[key] || null) : agg.byDay[d];
     if (!b) continue;
-    out.leads        += b.leads;
-    out.acOpen       += b.acOpen;
-    out.diyAcOpen    += b.diyAcOpen;
-    out.nonDiyAcOpen += b.nonDiyAcOpen;
-    out.disposed     += b.disposed;
-    out.nonDisposed  += b.nonDisposed;
+    out.leads += b.leads; out.acOpen += b.acOpen;
+    out.diyAcOpen += b.diyAcOpen; out.nonDiyAcOpen += b.nonDiyAcOpen;
+    out.disposed += b.disposed; out.nonDisposed += b.nonDisposed;
     if (b.codes)         b.codes.forEach(c         => out.clientCodes.add(c));
     if (b.diyCodes)      b.diyCodes.forEach(c      => out.diyClientCodes.add(c));
     if (b.nonDiyCodes)   b.nonDiyCodes.forEach(c   => out.nonDiyClientCodes.add(c));
@@ -975,8 +1019,9 @@ function collapseLeadAgg(agg, allowedDays, targetMonth, targetYear) {
 }
 
 function collapseFTAgg(agg, targetMonth, targetYear, allowedDays) {
-  const out = { total:0, clientCodes: new Set(), buckets:{} };
+  const out = { total:0, clientCodes: new Set(), buckets:{}, t15Buckets:{}, t30Buckets:{} };
   VOLUME_BUCKETS.forEach(b => out.buckets[b] = 0);
+  MARGIN_BUCKETS.forEach(b => { out.t15Buckets[b] = 0; out.t30Buckets[b] = 0; });
   for (const d of allowedDays) {
     const key = `${targetYear}_${targetMonth}_${d}`;
     const b = agg.byMonthDay && agg.byMonthDay[key];
@@ -985,6 +1030,11 @@ function collapseFTAgg(agg, targetMonth, targetYear, allowedDays) {
     if (b.codes) b.codes.forEach(c => out.clientCodes.add(c));
     VOLUME_BUCKETS.forEach(bkt => { out.buckets[bkt] += (b.buckets[bkt] || 0); });
   }
+  // t15/t30 come from top-level agg (not per-day), so use agg directly
+  MARGIN_BUCKETS.forEach(b => {
+    out.t15Buckets[b] = agg.t15Buckets[b] || 0;
+    out.t30Buckets[b] = agg.t30Buckets[b] || 0;
+  });
   return out;
 }
 
@@ -1000,6 +1050,7 @@ function collapseFTAggAllTrade(agg, targetMonth, targetYear, allowedDays) {
   return out;
 }
 
+// ─── CSV PARSER ───────────────────────────────────────────────────────────────
 function parseCSVLine(line) {
   const tabCount   = (line.match(/\t/g) || []).length;
   const commaCount = (line.match(/,/g)  || []).length;
@@ -1012,28 +1063,22 @@ function parseCSVLine(line) {
     if (ch === '"') {
       if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
       else inQuotes = !inQuotes;
-    } else if (ch === delim && !inQuotes) {
-      result.push(current.trim()); current = '';
-    } else { current += ch; }
+    } else if (ch === delim && !inQuotes) { result.push(current.trim()); current = ''; }
+    else { current += ch; }
   }
   result.push(current.trim());
   return result;
 }
 
 function disableInputs(disabled) {
-  ['lf1','lf2','ff1','ff2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.disabled = disabled;
-  });
+  ['lf1','lf2','ff1','ff2'].forEach(id => { const el = document.getElementById(id); if (el) el.disabled = disabled; });
 }
-
 function markZone(zoneId, badgeId, name, count) {
   document.getElementById(zoneId).classList.add('done');
   const b = document.getElementById(badgeId);
   b.textContent = `✓ ${name} — ${count.toLocaleString()} rows`;
   b.style.display = 'inline-block';
 }
-
 function checkAllReady() {
   const leadsReady = leadsAgg[0] !== null && leadsAgg[1] !== null;
   const ftReady    = ftAgg[0]    !== null && ftAgg[1]    !== null;
@@ -1051,34 +1096,41 @@ function checkAllReady() {
   }
 }
 
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
 function getVolumeBucket(vol) {
   const v = parseFloat(String(vol).replace(/,/g,''));
   if (isNaN(v) || v <= 0) return '';
-  if (v <= 50)    return '1 - 50';
-  if (v <= 100)   return '51 - 100';
-  if (v <= 200)   return '101 - 200';
-  if (v <= 350)   return '201 - 350';
-  if (v <= 500)   return '351 - 500';
-  if (v <= 750)   return '501 - 750';
-  if (v <= 1000)  return '751 - 1000';
-  if (v <= 2000)  return '1001 - 2000';
-  if (v <= 3500)  return '2001 - 3500';
-  if (v <= 5000)  return '3501 - 5000';
-  if (v <= 7500)  return '5001 - 7500';
-  if (v <= 10000) return '7501 - 10000';
-  if (v <= 15000) return '10001 - 15000';
-  if (v <= 20000) return '15001 - 20000';
-  if (v <= 30000) return '20001 - 30000';
-  if (v <= 40000) return '30001 - 40000';
-  if (v <= 50000) return '40001 - 50000';
-  return '> 50000';
+  if (v <= 50)    return '1 - 50';    if (v <= 100)   return '51 - 100';
+  if (v <= 200)   return '101 - 200'; if (v <= 350)   return '201 - 350';
+  if (v <= 500)   return '351 - 500'; if (v <= 750)   return '501 - 750';
+  if (v <= 1000)  return '751 - 1000'; if (v <= 2000) return '1001 - 2000';
+  if (v <= 3500)  return '2001 - 3500'; if (v <= 5000) return '3501 - 5000';
+  if (v <= 7500)  return '5001 - 7500'; if (v <= 10000) return '7501 - 10000';
+  if (v <= 15000) return '10001 - 15000'; if (v <= 20000) return '15001 - 20000';
+  if (v <= 30000) return '20001 - 30000'; if (v <= 40000) return '30001 - 40000';
+  if (v <= 50000) return '40001 - 50000'; return '> 50000';
 }
-
+function getMarginBucket(val) {
+  const v = parseFloat(String(val).replace(/,/g,''));
+  if (isNaN(v)) return '';
+  if (v === 0 || v < 0) return '0';
+  if (v < 500)    return '1 - 499';
+  if (v < 1000)   return '500 - 999';
+  if (v < 5000)   return '1000 - 4999';
+  if (v < 10000)  return '5000 - 9999';
+  if (v < 25000)  return '10000 - 24999';
+  if (v < 50000)  return '25000 - 49999';
+  if (v < 100000) return '50000 - 99999';
+  if (v < 300000) return '1L - 2.99L';
+  if (v < 500000) return '3L - 4.99L';
+  if (v < 750000) return '5L - 7.49L';
+  if (v < 1000000) return '7.50L - 9.99L';
+  return '>= 10L';
+}
 function isDisposed(disposition) {
   const d = (disposition || '').toString().trim().toLowerCase();
   return d !== '' && d !== 'not_connected';
 }
-
 function isDIY(row) {
   const v = (row['isDIY'] || '').toString().trim().toLowerCase();
   return v === 'true' || v === 'yes' || v === 'y' || v === '1';
@@ -1087,41 +1139,31 @@ function isDIYVal(v) {
   const s = (v || '').toString().trim().toLowerCase();
   return s === 'true' || s === 'yes' || s === 'y' || s === '1';
 }
-
 function changePct(curr, prev) {
   if (curr === 0 && prev === 0) return null;
   if (curr === 0) return -100;
   return ((curr - prev) / curr) * 100;
 }
-
 function fmtChange(pct) {
   if (pct === null || pct === undefined || isNaN(pct)) return { html:'<span class="val-neu">—</span>', val:'' };
   const sign = pct > 0 ? '+' : '';
   const cls  = pct > 0 ? 'val-pos' : pct < 0 ? 'val-neg' : 'val-neu';
   return { html:`<span class="${cls}">${sign}${pct.toFixed(2)}%</span>`, val: sign + pct.toFixed(2) + '%' };
 }
-
 function fmtChangePctPoint(curr, prev) {
-  if (curr === null || curr === undefined || isNaN(curr) ||
-      prev === null || prev === undefined || isNaN(prev)) {
+  if (curr === null || curr === undefined || isNaN(curr) || prev === null || prev === undefined || isNaN(prev))
     return { html:'<span class="val-neu">—</span>', val:'' };
-  }
   const diff = curr - prev;
   const sign = diff > 0 ? '+' : '';
   const cls  = diff > 0 ? 'val-pos' : diff < 0 ? 'val-neg' : 'val-neu';
   return { html:`<span class="${cls}">${sign}${diff.toFixed(2)}%</span>`, val: sign + diff.toFixed(2) + '%' };
 }
-
 function fmtPct(num, den) {
   if (!den || den === 0) return '0.00%';
   return ((num / den) * 100).toFixed(2) + '%';
 }
 
-function fmtDate(d) {
-  if (!d) return '—';
-  return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
-}
-
+// ─── PROCESS ──────────────────────────────────────────────────────────────────
 async function runProcess() {
   const btn = document.getElementById('procBtn');
   btn.disabled = true;
@@ -1187,15 +1229,7 @@ async function runProcess() {
     setProgress(20, 'Computing D1 — Leads Funnel...');
     await sleep(20);
 
-    const fCFinalD3 = hasCurrFTDays && fC.allTradeByMonthDay && Object.keys(fC.allTradeByMonthDay).length > 0
-      ? collapseFTAggAllTrade(fC, ftCurrMonth, ftCurrYear, ftCurrDaysArr)
-      : { total: fC.total, clientCodes: fC.allTradeClientCodes || new Set() };
-    const fPFinalD3 = hasPrevFTDays && fP.allTradeByMonthDay && Object.keys(fP.allTradeByMonthDay).length > 0
-      ? collapseFTAggAllTrade(fP, ftPrevMonth, ftPrevYear, ftPrevDaysToUse)
-      : { total: fP.total, clientCodes: fP.allTradeClientCodes || new Set() };
-
-    lg(`FT Curr D3 (all trades, month+day filtered): ${fCFinalD3.total.toLocaleString()} | Prev: ${fPFinalD3.total.toLocaleString()}`, 'info');
-
+    // ─── INTERSECTIONS ────────────────────────────────────────────────────
     const intersect = (setA, setB) => {
       if (!setA || !setB) return 0;
       let count = 0;
@@ -1204,20 +1238,16 @@ async function runProcess() {
       return count;
     };
 
-    const d1CurrFT       = intersect(lCFinal.clientCodes,    fCFinal.clientCodes);
-    const d1PrevFT       = intersect(lPFinal.clientCodes,    fPFinal.clientCodes);
+    // D1: FT Done = leads registered this month ∩ FT where Activation Date = First Trade Date New month
+    // Does NOT require Lead Stage C6/C7 — all registered leads qualify
+    const d1CurrFT       = intersect(lCFinal.clientCodes,             fCFinal.clientCodes);
+    const d1PrevFT       = intersect(lPFinal.clientCodes,             fPFinal.clientCodes);
     const d1CurrDiyFT    = intersect(lCFinal.diyClientCodes    || new Set(), fCFinal.clientCodes);
     const d1CurrNonDiyFT = intersect(lCFinal.nonDiyClientCodes || new Set(), fCFinal.clientCodes);
     const d1PrevDiyFT    = intersect(lPFinal.diyClientCodes    || new Set(), fPFinal.clientCodes);
     const d1PrevNonDiyFT = intersect(lPFinal.nonDiyClientCodes || new Set(), fPFinal.clientCodes);
 
-    const d3CurrDiyAcFT    = intersect(lCFinal.diyAcClientCodes    || new Set(), fCFinalD3.clientCodes);
-    const d3CurrNonDiyAcFT = intersect(lCFinal.nonDiyAcClientCodes || new Set(), fCFinalD3.clientCodes);
-    const d3PrevDiyAcFT    = intersect(lPFinal.diyAcClientCodes    || new Set(), fPFinalD3.clientCodes);
-    const d3PrevNonDiyAcFT = intersect(lPFinal.nonDiyAcClientCodes || new Set(), fPFinalD3.clientCodes);
-
     lg(`D1 — Curr FT: ${d1CurrFT}, DIY FT: ${d1CurrDiyFT}, NonDIY FT: ${d1CurrNonDiyFT}`, 'ok');
-    lg(`D3 — Curr DIY FT: ${d3CurrDiyAcFT}, NonDIY FT: ${d3CurrNonDiyAcFT}`, 'ok');
 
     setProgress(60, 'Building dashboard data...');
     await sleep(20);
@@ -1230,25 +1260,21 @@ async function runProcess() {
       curr: { leads:lCFinal.leads, disposed:lCFinal.disposed, nonDisposed:lCFinal.nonDisposed },
       prev: { leads:lPFinal.leads, disposed:lPFinal.disposed, nonDisposed:lPFinal.nonDisposed }
     };
-    const d3 = {
-      curr: { accounts:lCFinal.acOpen, diyAccounts:lCFinal.diyAcOpen, diyFT:d3CurrDiyAcFT, nonDiyAccounts:lCFinal.nonDiyAcOpen, nonDiyFT:d3CurrNonDiyAcFT },
-      prev: { accounts:lPFinal.acOpen, diyAccounts:lPFinal.diyAcOpen, diyFT:d3PrevDiyAcFT, nonDiyAccounts:lPFinal.nonDiyAcOpen, nonDiyFT:d3PrevNonDiyAcFT }
+    // D3 = Volume Bucket (bothSameMonth)
+    const d3 = { curr:{...fCFinal.buckets}, prev:{...fPFinal.buckets} };
+    // D4 = Margin Bucket (bothSameMonth)
+    const d4 = {
+      curr: { t15:{...fCFinal.t15Buckets}, t30:{...fCFinal.t30Buckets} },
+      prev: { t15:{...fPFinal.t15Buckets}, t30:{...fPFinal.t30Buckets} }
     };
-    const d4 = { curr:{...fCFinal.buckets}, prev:{...fPFinal.buckets} };
-
-    lg(`D1 — Curr FT: ${d1CurrFT}, DIY FT: ${d1CurrDiyFT}, NonDIY FT: ${d1CurrNonDiyFT}`, 'ok');
-    lg(`D3 — Curr Accounts: ${lCFinal.acOpen}, DIY Ac: ${lCFinal.diyAcOpen}, NonDIY Ac: ${lCFinal.nonDiyAcOpen}`, 'ok');
 
     const dateRangeInfo = {
       leadCurrMin:  lC.minDate ? lC.minDate.toISOString() : null,
       leadCurrMax:  lC.maxDate ? lC.maxDate.toISOString() : null,
-      leadCurrDays: leadCurrDaysArr,
-      leadPrevDays: leadPrevDaysToUse,
-      ftCurrDays:   ftCurrDaysArr,
-      ftPrevDays:   ftPrevDaysToUse,
-      ftCurrMonth, ftCurrYear,
-      ftPrevMonth, ftPrevYear,
-      prevCapped:   hasPrevLeadDays
+      leadCurrDays: leadCurrDaysArr, leadPrevDays: leadPrevDaysToUse,
+      ftCurrDays: ftCurrDaysArr,     ftPrevDays:  ftPrevDaysToUse,
+      ftCurrMonth, ftCurrYear, ftPrevMonth, ftPrevYear,
+      prevCapped: hasPrevLeadDays
     };
 
     dashData = {
@@ -1260,12 +1286,10 @@ async function runProcess() {
     try {
       localStorage.setItem('ftMOMDashboard', JSON.stringify(dashData));
       lg('Saved to localStorage', 'ok');
-    } catch(e) {
-      lg('localStorage save failed: ' + e.message, 'warn');
-    }
+    } catch(e) { lg('localStorage save failed: ' + e.message, 'warn'); }
 
     if (adminSecret) {
-      await publishToGitHub(dashData);
+      await publishToCloudflare(dashData);
     } else {
       lg('No admin secret set — data saved locally only.', 'warn');
     }
@@ -1287,16 +1311,17 @@ async function runProcess() {
   }
 }
 
+// ─── DATE BANNER ──────────────────────────────────────────────────────────────
 function showDateBanner(dashId) {
   const el = document.getElementById(dashId + '-date-banner');
   if (!el || !dashData || !dashData.dateRangeInfo) return;
+  // Banner logic can be expanded here if needed
 }
 
+// ─── RENDER DASHBOARDS ────────────────────────────────────────────────────────
 function renderDash(id) {
   if (!dashData) {
-    ['d1','d2','d3','d4'].forEach(d => {
-      document.getElementById(d+'-nodata').style.display = 'block';
-    });
+    ['d1','d2','d3','d4'].forEach(d => { document.getElementById(d+'-nodata').style.display = 'block'; });
     return;
   }
   if (id === 'd1') renderD1();
@@ -1305,21 +1330,33 @@ function renderDash(id) {
   if (id === 'd4') renderD4();
 }
 
+// ─── D1: LEADS FUNNEL ─────────────────────────────────────────────────────────
 function renderD1() {
   const {d1} = dashData;
   const c = d1.curr, p = d1.prev;
   document.getElementById('d1-nodata').style.display = 'none';
   showDateBanner('d1');
+
   const convCurr = c.leads > 0 ? (c.acOpen / c.leads) * 100 : 0;
   const convPrev = p.leads > 0 ? (p.acOpen / p.leads) * 100 : 0;
+
+  // DIY FT In % = DIY FT ÷ FT Done × 100 (share of FTs that are DIY)
+  const diyFTPctCurr    = c.ftDone > 0 ? (c.diyFT    / c.ftDone) * 100 : 0;
+  const diyFTPctPrev    = p.ftDone > 0 ? (p.diyFT    / p.ftDone) * 100 : 0;
+  const nonDiyFTPctCurr = c.ftDone > 0 ? (c.nonDiyFT / c.ftDone) * 100 : 0;
+  const nonDiyFTPctPrev = p.ftDone > 0 ? (p.nonDiyFT / p.ftDone) * 100 : 0;
+
   const rows = [
-    { label:'Leads',      curr:c.leads,    prev:p.leads,    isSub:false, isPct:false },
-    { label:'A/C Open',   curr:c.acOpen,   prev:p.acOpen,   isSub:false, isPct:false },
-    { label:'Conv %',     curr:convCurr,   prev:convPrev,   isSub:false, isPct:true  },
-    { label:'FT Done',    curr:c.ftDone,   prev:p.ftDone,   isSub:false, isPct:false },
-    { label:'DIY FT',     curr:c.diyFT,    prev:p.diyFT,    isSub:true,  isPct:false },
-    { label:'Non DIY FT', curr:c.nonDiyFT, prev:p.nonDiyFT, isSub:true,  isPct:false },
+    { label:'Leads',           curr:c.leads,        prev:p.leads,        isSub:false, isPct:false },
+    { label:'A/C Open',        curr:c.acOpen,        prev:p.acOpen,        isSub:false, isPct:false },
+    { label:'Conv %',          curr:convCurr,        prev:convPrev,        isSub:false, isPct:true  },
+    { label:'FT Done',         curr:c.ftDone,        prev:p.ftDone,        isSub:false, isPct:false },
+    { label:'DIY FT',          curr:c.diyFT,         prev:p.diyFT,         isSub:true,  isPct:false },
+    { label:'DIY FT In %',     curr:diyFTPctCurr,    prev:diyFTPctPrev,    isSub:true,  isPct:true  },
+    { label:'Non DIY FT',      curr:c.nonDiyFT,      prev:p.nonDiyFT,      isSub:true,  isPct:false },
+    { label:'Non DIY FT In %', curr:nonDiyFTPctCurr, prev:nonDiyFTPctPrev, isSub:true,  isPct:true  },
   ];
+
   let html = '';
   rows.forEach(r => {
     const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
@@ -1328,16 +1365,19 @@ function renderD1() {
     const cls = r.isSub ? ' row-sub' : '';
     html += `<tr class="${cls}"><td>${r.isSub ? '↳ ' : ''}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
   });
+
   document.getElementById('d1-tbody').innerHTML = html;
   document.getElementById('d1-badge').textContent = 'Current vs Previous';
+
   const ins = [
     `<strong>${c.leads.toLocaleString()}</strong> leads this month vs <strong>${p.leads.toLocaleString()}</strong> previous — ${fmtChange(changePct(c.leads, p.leads)).html} change`,
     `A/C Open rate: <strong>${convCurr.toFixed(2)}%</strong> current vs <strong>${convPrev.toFixed(2)}%</strong> previous`,
     `FT count: <strong>${c.ftDone.toLocaleString()}</strong> this month vs <strong>${p.ftDone.toLocaleString()}</strong> previous`,
-    `DIY FTs: <strong>${c.diyFT.toLocaleString()}</strong> | Non-DIY FTs: <strong>${c.nonDiyFT.toLocaleString()}</strong> this month`,
-    `DIY share of FTs: <strong>${fmtPct(c.diyFT, c.ftDone)}</strong> current vs <strong>${fmtPct(p.diyFT, p.ftDone)}</strong> previous`,
+    `DIY FTs: <strong>${c.diyFT.toLocaleString()}</strong> (${diyFTPctCurr.toFixed(2)}%) | Non-DIY FTs: <strong>${c.nonDiyFT.toLocaleString()}</strong> (${nonDiyFTPctCurr.toFixed(2)}%) this month`,
+    `DIY FT share: <strong>${diyFTPctCurr.toFixed(2)}%</strong> current vs <strong>${diyFTPctPrev.toFixed(2)}%</strong> previous — ${fmtChangePctPoint(diyFTPctCurr, diyFTPctPrev).html}`,
   ];
   renderInsights('d1', ins);
+
   const d1ChartsEl = document.getElementById('d1-charts');
   if (d1ChartsEl) d1ChartsEl.innerHTML = `
     <div class="charts-grid">
@@ -1365,15 +1405,18 @@ function renderD1() {
   }, 100);
 }
 
+// ─── D2: DISPOSED ─────────────────────────────────────────────────────────────
 function renderD2() {
   const {d2} = dashData;
   const c = d2.curr, p = d2.prev;
   document.getElementById('d2-nodata').style.display = 'none';
   showDateBanner('d2');
+
   const dispPctC    = c.leads > 0 ? (c.disposed    / c.leads) * 100 : 0;
   const dispPctP    = p.leads > 0 ? (p.disposed    / p.leads) * 100 : 0;
   const nonDispPctC = c.leads > 0 ? (c.nonDisposed / c.leads) * 100 : 0;
   const nonDispPctP = p.leads > 0 ? (p.nonDisposed / p.leads) * 100 : 0;
+
   const rows = [
     { label:'Leads',             curr:c.leads,       prev:p.leads,       isSub:false, isPct:false },
     { label:'Disposed',          curr:c.disposed,    prev:p.disposed,    isSub:false, isPct:false },
@@ -1381,6 +1424,7 @@ function renderD2() {
     { label:'Non Disposed',      curr:c.nonDisposed, prev:p.nonDisposed, isSub:false, isPct:false },
     { label:'Non Disposed In %', curr:nonDispPctC,   prev:nonDispPctP,   isSub:true,  isPct:true  },
   ];
+
   let html = '';
   rows.forEach(r => {
     const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
@@ -1389,8 +1433,10 @@ function renderD2() {
     const cls = r.isSub ? ' row-sub' : '';
     html += `<tr class="${cls}"><td>${r.isSub ? '↳ ' : ''}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
   });
+
   document.getElementById('d2-tbody').innerHTML = html;
   document.getElementById('d2-badge').textContent = 'Current vs Previous';
+
   const ins = [
     `<strong>${c.leads.toLocaleString()}</strong> total leads this month vs <strong>${p.leads.toLocaleString()}</strong> previous`,
     `Disposed rate: <strong>${dispPctC.toFixed(2)}%</strong> current vs <strong>${dispPctP.toFixed(2)}%</strong> previous — ${fmtChangePctPoint(dispPctC, dispPctP).html}`,
@@ -1399,6 +1445,7 @@ function renderD2() {
     `Pending follow-up (Non-Disposed): ${fmtChange(changePct(c.nonDisposed, p.nonDisposed)).html} change MOM`,
   ];
   renderInsights('d2', ins);
+
   const d2ChartsEl = document.getElementById('d2-charts');
   if (d2ChartsEl) d2ChartsEl.innerHTML = `
     <div class="charts-grid">
@@ -1418,107 +1465,133 @@ function renderD2() {
   }, 100);
 }
 
+// ─── D3: VOLUME BUCKET (formerly D4) ─────────────────────────────────────────
 function renderD3() {
   const {d3} = dashData;
-  const c = d3.curr, p = d3.prev;
   document.getElementById('d3-nodata').style.display = 'none';
   showDateBanner('d3');
-  const diyFTPctC    = c.diyAccounts    > 0 ? (c.diyFT    / c.diyAccounts)    * 100 : 0;
-  const diyFTPctP    = p.diyAccounts    > 0 ? (p.diyFT    / p.diyAccounts)    * 100 : 0;
-  const nonDiyFTPctC = c.nonDiyAccounts > 0 ? (c.nonDiyFT / c.nonDiyAccounts) * 100 : 0;
-  const nonDiyFTPctP = p.nonDiyAccounts > 0 ? (p.nonDiyFT / p.nonDiyAccounts) * 100 : 0;
-  const rows = [
-    { label:'Accounts',     curr:c.accounts,        prev:p.accounts,        level:0, isPct:false },
-    { label:'DIY',          curr:c.diyAccounts,     prev:p.diyAccounts,     level:1, isPct:false },
-    { label:'FT Done',      curr:c.diyFT,           prev:p.diyFT,           level:2, isPct:false },
-    { label:'FT Done In %', curr:diyFTPctC,         prev:diyFTPctP,         level:2, isPct:true  },
-    { label:'Non DIY',      curr:c.nonDiyAccounts,  prev:p.nonDiyAccounts,  level:1, isPct:false },
-    { label:'FT Done',      curr:c.nonDiyFT,        prev:p.nonDiyFT,        level:2, isPct:false },
-    { label:'FT Done In %', curr:nonDiyFTPctC,      prev:nonDiyFTPctP,      level:2, isPct:true  },
-  ];
-  let html = '';
-  rows.forEach(r => {
-    const ch = r.isPct ? fmtChangePctPoint(r.curr, r.prev) : fmtChange(changePct(r.curr, r.prev));
-    const currDisp = r.isPct ? `<span class="val-pct">${r.curr.toFixed(2)}%</span>` : `<span class="val-num">${r.curr.toLocaleString()}</span>`;
-    const prevDisp = r.isPct ? `<span class="val-pct">${r.prev.toFixed(2)}%</span>` : `<span class="val-num">${r.prev.toLocaleString()}</span>`;
-    const pad = r.level === 2 ? '&nbsp;&nbsp;&nbsp;&nbsp;↳ ' : r.level === 1 ? '&nbsp;&nbsp;▸ ' : '';
-    const cls = r.level > 0 ? ' row-sub' : '';
-    html += `<tr class="${cls}"><td>${pad}${r.label}</td><td>${currDisp}</td><td>${prevDisp}</td><td>${ch.html}</td></tr>`;
+
+  let totalCurr = 0, totalPrev = 0;
+  let html = '', topBucket = '', topBucketCount = 0;
+
+  VOLUME_BUCKETS.forEach(b => {
+    const curr = d3.curr[b] || 0;
+    const prev = d3.prev[b] || 0;
+    totalCurr += curr; totalPrev += prev;
+    if (curr > topBucketCount) { topBucketCount = curr; topBucket = b; }
+    const ch = fmtChange(changePct(curr, prev));
+    html += `<tr>
+      <td>₹${b}</td>
+      <td><span class="val-num">${curr.toLocaleString()}</span></td>
+      <td><span class="val-num">${prev.toLocaleString()}</span></td>
+      <td>${ch.html}</td>
+    </tr>`;
   });
+
+  const totalCh = fmtChange(changePct(totalCurr, totalPrev));
+  html += `<tr class="row-total">
+    <td>Grand Total</td>
+    <td><span class="val-num">${totalCurr.toLocaleString()}</span></td>
+    <td><span class="val-num">${totalPrev.toLocaleString()}</span></td>
+    <td>${totalCh.html}</td>
+  </tr>`;
+
   document.getElementById('d3-tbody').innerHTML = html;
-  document.getElementById('d3-badge').textContent = 'Current vs Previous';
+  document.getElementById('d3-badge').textContent = `${VOLUME_BUCKETS.length} buckets`;
+
   const ins = [
-    `<strong>${c.accounts.toLocaleString()}</strong> accounts opened this month vs <strong>${p.accounts.toLocaleString()}</strong> previous`,
-    `DIY accounts: <strong>${c.diyAccounts.toLocaleString()}</strong> (${fmtPct(c.diyAccounts, c.accounts)}) this month`,
-    `Non-DIY accounts: <strong>${c.nonDiyAccounts.toLocaleString()}</strong> (${fmtPct(c.nonDiyAccounts, c.accounts)}) this month`,
-    `DIY FT conversion: <strong>${fmtPct(c.diyFT, c.diyAccounts)}</strong> current vs <strong>${fmtPct(p.diyFT, p.diyAccounts)}</strong> previous`,
-    `Non-DIY FT conversion: <strong>${fmtPct(c.nonDiyFT, c.nonDiyAccounts)}</strong> current vs <strong>${fmtPct(p.nonDiyFT, p.nonDiyAccounts)}</strong> previous`,
+    `Total FTs: <strong>${totalCurr.toLocaleString()}</strong> current vs <strong>${totalPrev.toLocaleString()}</strong> previous — ${totalCh.html}`,
+    `Most common bucket this month: <strong>₹${topBucket}</strong> with <strong>${topBucketCount.toLocaleString()}</strong> FTs (${fmtPct(topBucketCount, totalCurr)})`,
+    `Low value trades (≤₹200): <strong>${((d3.curr['1 - 50']||0)+(d3.curr['51 - 100']||0)+(d3.curr['101 - 200']||0)).toLocaleString()}</strong> this month`,
+    `High value trades (>₹10K): <strong>${((d3.curr['10001 - 15000']||0)+(d3.curr['15001 - 20000']||0)+(d3.curr['20001 - 30000']||0)+(d3.curr['30001 - 40000']||0)+(d3.curr['40001 - 50000']||0)+(d3.curr['> 50000']||0)).toLocaleString()}</strong> this month`,
+    `Mid-range trades (₹1K–₹5K): <strong>${((d3.curr['1001 - 2000']||0)+(d3.curr['2001 - 3500']||0)+(d3.curr['3501 - 5000']||0)).toLocaleString()}</strong> this month`,
   ];
   renderInsights('d3', ins);
+
   const d3ChartsEl = document.getElementById('d3-charts');
   if (d3ChartsEl) d3ChartsEl.innerHTML = `
     <div class="charts-grid">
-      <div class="chart-card"><h4>Accounts — DIY vs Non-DIY MOM</h4><canvas id="d3c1"></canvas></div>
-      <div class="chart-card"><h4>FT Done — DIY vs Non-DIY MOM</h4><canvas id="d3c2"></canvas></div>
-      <div class="chart-card"><h4>Current Month — Account Split</h4><canvas id="d3c3"></canvas></div>
-      <div class="chart-card"><h4>FT Done In % Trend — MOM</h4><canvas id="d3c4"></canvas></div>
+      <div class="chart-card" style="grid-column:1/-1"><h4>Volume Bucket Trend — Current vs Previous</h4><canvas id="d3c1"></canvas></div>
+      <div class="chart-card"><h4>Current Month — Top Buckets Share</h4><canvas id="d3c2"></canvas></div>
+      <div class="chart-card"><h4>Total FTs — MOM</h4><canvas id="d3c3"></canvas></div>
     </div>`;
   setTimeout(() => {
-    makeBarChart('d3c1', ['DIY Accounts','Non-DIY Accounts'], [c.diyAccounts, c.nonDiyAccounts], [p.diyAccounts, p.nonDiyAccounts]);
-    makeBarChart('d3c2', ['DIY FT','Non-DIY FT'], [c.diyFT, c.nonDiyFT], [p.diyFT, p.nonDiyFT]);
-    makePieChart('d3c3', ['DIY','Non-DIY'], [c.diyAccounts, c.nonDiyAccounts], [CHART_COLORS.curr, CHART_COLORS.warn]);
-    makeLineChart('d3c4', ['Previous Month', 'Current Month'],
-      [parseFloat(diyFTPctP.toFixed(2)), parseFloat(diyFTPctC.toFixed(2))],
-      [parseFloat(nonDiyFTPctP.toFixed(2)), parseFloat(nonDiyFTPctC.toFixed(2))],
-      ['DIY FT %', 'Non-DIY FT %']);
+    const activeBuckets = VOLUME_BUCKETS.filter(b => (d3.curr[b]||0) > 0 || (d3.prev[b]||0) > 0);
+    makeLineChart('d3c1',
+      activeBuckets.map(b => '₹'+b),
+      activeBuckets.map(b => d3.curr[b]||0),
+      activeBuckets.map(b => d3.prev[b]||0),
+      ['Current Month','Previous Month']);
+    const top6 = [...VOLUME_BUCKETS]
+      .filter(b => (d3.curr[b]||0) > 0)
+      .sort((a,b) => (d3.curr[b]||0) - (d3.curr[a]||0))
+      .slice(0,6)
+      .sort((a,b) => VOLUME_BUCKETS.indexOf(a) - VOLUME_BUCKETS.indexOf(b));
+    makePieChart('d3c2', top6.map(b=>'₹'+b), top6.map(b=>d3.curr[b]||0), ['#4f8ef7','#4ff7b0','#f7a74f','#f74f7a','#a78bfa','#38bdf8']);
+    makeBarChart('d3c3', ['Total FTs'], [totalCurr], [totalPrev]);
   }, 100);
 }
 
+// ─── D4: MARGIN BUCKET ────────────────────────────────────────────────────────
 function renderD4() {
   const {d4} = dashData;
   document.getElementById('d4-nodata').style.display = 'none';
   showDateBanner('d4');
-  let totalCurr = 0, totalPrev = 0;
-  let html = '', topBucket = '', topBucketCount = 0;
-  VOLUME_BUCKETS.forEach(b => {
-    const curr = d4.curr[b] || 0;
-    const prev = d4.prev[b] || 0;
-    totalCurr += curr;
-    totalPrev += prev;
-    if (curr > topBucketCount) { topBucketCount = curr; topBucket = b; }
-    const ch = fmtChange(changePct(curr, prev));
-    html += `<tr><td>₹${b}</td><td><span class="val-num">${curr.toLocaleString()}</span></td><td><span class="val-num">${prev.toLocaleString()}</span></td><td>${ch.html}</td></tr>`;
-  });
-  const totalCh = fmtChange(changePct(totalCurr, totalPrev));
-  html += `<tr class="row-total"><td>Grand Total</td><td><span class="val-num">${totalCurr.toLocaleString()}</span></td><td><span class="val-num">${totalPrev.toLocaleString()}</span></td><td>${totalCh.html}</td></tr>`;
-  document.getElementById('d4-tbody').innerHTML = html;
-  document.getElementById('d4-badge').textContent = `${VOLUME_BUCKETS.length} buckets`;
+
+  function buildMarginTableHTML(currBuckets, prevBuckets) {
+    let html = '', topBucket = '', topCount = 0, totalCurr = 0, totalPrev = 0;
+    MARGIN_BUCKETS.forEach(b => {
+      const curr = currBuckets[b] || 0;
+      const prev = prevBuckets[b] || 0;
+      totalCurr += curr; totalPrev += prev;
+      if (curr > topCount) { topCount = curr; topBucket = b; }
+      const ch = fmtChange(changePct(curr, prev));
+      const label = b === '0' ? '₹0 (Zero/Negative)' : b.includes('L') ? b : `₹${b}`;
+      html += `<tr><td>${label}</td><td><span class="val-num">${curr.toLocaleString()}</span></td><td><span class="val-num">${prev.toLocaleString()}</span></td><td>${ch.html}</td></tr>`;
+    });
+    const totalCh = fmtChange(changePct(totalCurr, totalPrev));
+    html += `<tr class="row-total"><td>Grand Total</td><td><span class="val-num">${totalCurr.toLocaleString()}</span></td><td><span class="val-num">${totalPrev.toLocaleString()}</span></td><td>${totalCh.html}</td></tr>`;
+    return { html, topBucket, topCount, totalCurr, totalPrev, totalCh };
+  }
+
+  const t15 = buildMarginTableHTML(d4.curr.t15, d4.prev.t15);
+  const t30 = buildMarginTableHTML(d4.curr.t30, d4.prev.t30);
+
+  document.getElementById('d4-t15-tbody').innerHTML = t15.html;
+  document.getElementById('d4-t30-tbody').innerHTML = t30.html;
+  document.getElementById('d4-t15-badge').textContent = `${MARGIN_BUCKETS.length} buckets`;
+  document.getElementById('d4-t30-badge').textContent = `${MARGIN_BUCKETS.length} buckets`;
+
   const ins = [
-    `Total FTs: <strong>${totalCurr.toLocaleString()}</strong> current vs <strong>${totalPrev.toLocaleString()}</strong> previous — ${totalCh.html}`,
-    `Most common bucket this month: <strong>₹${topBucket}</strong> with <strong>${topBucketCount.toLocaleString()}</strong> FTs (${fmtPct(topBucketCount, totalCurr)})`,
-    `Low value trades (≤₹200): <strong>${((d4.curr['1 - 50']||0)+(d4.curr['51 - 100']||0)+(d4.curr['101 - 200']||0)).toLocaleString()}</strong> this month`,
-    `High value trades (>₹10K): <strong>${((d4.curr['10001 - 15000']||0)+(d4.curr['15001 - 20000']||0)+(d4.curr['20001 - 30000']||0)+(d4.curr['30001 - 40000']||0)+(d4.curr['40001 - 50000']||0)+(d4.curr['> 50000']||0)).toLocaleString()}</strong> this month`,
-    `Mid-range trades (₹1K–₹5K): <strong>${((d4.curr['1001 - 2000']||0)+(d4.curr['2001 - 3500']||0)+(d4.curr['3501 - 5000']||0)).toLocaleString()}</strong> this month`,
+    `T+15 total clients: <strong>${t15.totalCurr.toLocaleString()}</strong> current vs <strong>${t15.totalPrev.toLocaleString()}</strong> previous — ${t15.totalCh.html}`,
+    `T+30 total clients: <strong>${t30.totalCurr.toLocaleString()}</strong> current vs <strong>${t30.totalPrev.toLocaleString()}</strong> previous — ${t30.totalCh.html}`,
+    `T+15 top bucket: <strong>${t15.topBucket}</strong> with <strong>${t15.topCount.toLocaleString()}</strong> clients (${fmtPct(t15.topCount, t15.totalCurr)})`,
+    `T+30 top bucket: <strong>${t30.topBucket}</strong> with <strong>${t30.topCount.toLocaleString()}</strong> clients (${fmtPct(t30.topCount, t30.totalCurr)})`,
+    `High margin clients T+15 (≥1L): <strong>${((d4.curr.t15['1L - 2.99L']||0)+(d4.curr.t15['3L - 4.99L']||0)+(d4.curr.t15['5L - 7.49L']||0)+(d4.curr.t15['7.50L - 9.99L']||0)+(d4.curr.t15['>= 10L']||0)).toLocaleString()}</strong> this month`,
   ];
   renderInsights('d4', ins);
+
   const d4ChartsEl = document.getElementById('d4-charts');
   if (d4ChartsEl) d4ChartsEl.innerHTML = `
     <div class="charts-grid">
-      <div class="chart-card" style="grid-column:1/-1"><h4>Volume Bucket Trend — Current vs Previous</h4><canvas id="d4c1"></canvas></div>
-      <div class="chart-card"><h4>Current Month — Top Buckets Share</h4><canvas id="d4c2"></canvas></div>
-      <div class="chart-card"><h4>Total FTs — MOM</h4><canvas id="d4c3"></canvas></div>
+      <div class="chart-card"><h4>T+15 Margin — Current vs Previous</h4><canvas id="d4c1"></canvas></div>
+      <div class="chart-card"><h4>T+30 Margin — Current vs Previous</h4><canvas id="d4c2"></canvas></div>
+      <div class="chart-card"><h4>Current Month — T+15 Top Buckets</h4><canvas id="d4c3"></canvas></div>
+      <div class="chart-card"><h4>Current Month — T+30 Top Buckets</h4><canvas id="d4c4"></canvas></div>
     </div>`;
   setTimeout(() => {
-    const activeBuckets = VOLUME_BUCKETS.filter(b => (d4.curr[b]||0) > 0 || (d4.prev[b]||0) > 0);
-    makeLineChart('d4c1', activeBuckets.map(b => '₹'+b), activeBuckets.map(b => d4.curr[b]||0), activeBuckets.map(b => d4.prev[b]||0), ['Current Month','Previous Month']);
-    const top6 = [...VOLUME_BUCKETS].filter(b => (d4.curr[b]||0) > 0)
-      .sort((a,b) => (d4.curr[b]||0) - (d4.curr[a]||0)).slice(0,6)
-      .sort((a,b) => VOLUME_BUCKETS.indexOf(a) - VOLUME_BUCKETS.indexOf(b));
-    makePieChart('d4c2', top6.map(b=>'₹'+b), top6.map(b=>d4.curr[b]||0), ['#4f8ef7','#4ff7b0','#f7a74f','#f74f7a','#a78bfa','#38bdf8']);
-    makeBarChart('d4c3', ['Total FTs'], [totalCurr], [totalPrev]);
+    const activeBuckets = MARGIN_BUCKETS.filter(b => (d4.curr.t15[b]||0) > 0 || (d4.prev.t15[b]||0) > 0);
+    makeBarChart('d4c1', activeBuckets.map(b => b.includes('L') ? b : (b==='0'?'₹0':`₹${b}`)), activeBuckets.map(b => d4.curr.t15[b]||0), activeBuckets.map(b => d4.prev.t15[b]||0));
+    const activeBuckets30 = MARGIN_BUCKETS.filter(b => (d4.curr.t30[b]||0) > 0 || (d4.prev.t30[b]||0) > 0);
+    makeBarChart('d4c2', activeBuckets30.map(b => b.includes('L') ? b : (b==='0'?'₹0':`₹${b}`)), activeBuckets30.map(b => d4.curr.t30[b]||0), activeBuckets30.map(b => d4.prev.t30[b]||0));
+    const top5t15 = [...MARGIN_BUCKETS].filter(b => (d4.curr.t15[b]||0) > 0).sort((a,b) => (d4.curr.t15[b]||0)-(d4.curr.t15[a]||0)).slice(0,5).sort((a,b) => MARGIN_BUCKETS.indexOf(a)-MARGIN_BUCKETS.indexOf(b));
+    makePieChart('d4c3', top5t15.map(b => b.includes('L')?b:(b==='0'?'₹0':`₹${b}`)), top5t15.map(b=>d4.curr.t15[b]||0), ['#4f8ef7','#4ff7b0','#f7a74f','#f74f7a','#a78bfa']);
+    const top5t30 = [...MARGIN_BUCKETS].filter(b => (d4.curr.t30[b]||0) > 0).sort((a,b) => (d4.curr.t30[b]||0)-(d4.curr.t30[a]||0)).slice(0,5).sort((a,b) => MARGIN_BUCKETS.indexOf(a)-MARGIN_BUCKETS.indexOf(b));
+    makePieChart('d4c4', top5t30.map(b => b.includes('L')?b:(b==='0'?'₹0':`₹${b}`)), top5t30.map(b=>d4.curr.t30[b]||0), ['#4f8ef7','#4ff7b0','#f7a74f','#f74f7a','#a78bfa']);
   }, 100);
 }
 
+// ─── CHART HELPERS ────────────────────────────────────────────────────────────
 const CHART_COLORS = {
   curr: 'rgba(79,142,247,0.85)', prev: 'rgba(79,247,176,0.85)',
   currBorder: '#4f8ef7', prevBorder: '#4ff7b0',
@@ -1529,7 +1602,6 @@ let activeCharts = {};
 function destroyChart(id) {
   if (activeCharts[id]) { activeCharts[id].destroy(); delete activeCharts[id]; }
 }
-
 function makeBarChart(canvasId, labels, currData, prevData) {
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId);
@@ -1537,57 +1609,37 @@ function makeBarChart(canvasId, labels, currData, prevData) {
   const datasets = [{ label:'Current Month', data:currData, backgroundColor:CHART_COLORS.curr, borderRadius:4 }];
   if (prevData && prevData.length) datasets.push({ label:'Previous Month', data:prevData, backgroundColor:CHART_COLORS.prev, borderRadius:4 });
   activeCharts[canvasId] = new Chart(ctx, {
-    type: 'bar', data: { labels, datasets },
-    options: {
-      responsive:true, maintainAspectRatio:true,
-      plugins:{ legend:{ labels:{ color:'#e8ecf5', font:{size:11} } } },
-      scales:{
-        x:{ ticks:{ color:'#8892a4', font:{size:11} }, grid:{ color:'#2a3045' } },
-        y:{ ticks:{ color:'#8892a4', font:{size:11} }, grid:{ color:'#2a3045' } }
-      }
-    }
+    type:'bar', data:{labels, datasets},
+    options:{responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{labels:{color:'#e8ecf5',font:{size:11}}}},
+      scales:{x:{ticks:{color:'#8892a4',font:{size:11}},grid:{color:'#2a3045'}},y:{ticks:{color:'#8892a4',font:{size:11}},grid:{color:'#2a3045'}}}}
   });
 }
-
 function makePieChart(canvasId, labels, data, colors) {
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
   activeCharts[canvasId] = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels, datasets:[{ data, backgroundColor:colors, borderWidth:1, borderColor:'#161922' }] },
-    options: { responsive:true, maintainAspectRatio:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#e8ecf5', font:{size:11}, padding:12 } } } }
+    type:'doughnut',
+    data:{labels, datasets:[{data, backgroundColor:colors, borderWidth:1, borderColor:'#161922'}]},
+    options:{responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{position:'bottom', labels:{color:'#e8ecf5',font:{size:11},padding:12}}}}
   });
 }
-
 function makeLineChart(canvasId, labels, currData, prevData, seriesLabels) {
   destroyChart(canvasId);
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
   const lab = seriesLabels || ['Series 1','Series 2'];
-  const datasets = [{
-    label: lab[0], data: currData,
-    borderColor: CHART_COLORS.currBorder, backgroundColor:'rgba(79,142,247,0.1)',
-    tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7
-  }];
-  if (prevData && prevData.length) datasets.push({
-    label: lab[1] || 'Series 2', data: prevData,
-    borderColor: CHART_COLORS.prevBorder, backgroundColor:'rgba(79,247,176,0.1)',
-    tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7
-  });
+  const datasets = [{label:lab[0], data:currData, borderColor:CHART_COLORS.currBorder, backgroundColor:'rgba(79,142,247,0.1)', tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7}];
+  if (prevData && prevData.length) datasets.push({label:lab[1]||'Series 2', data:prevData, borderColor:CHART_COLORS.prevBorder, backgroundColor:'rgba(79,247,176,0.1)', tension:0.4, fill:true, pointRadius:5, pointHoverRadius:7});
   activeCharts[canvasId] = new Chart(ctx, {
-    type: 'line', data: { labels, datasets },
-    options: {
-      responsive:true, maintainAspectRatio:true,
-      plugins:{ legend:{ labels:{ color:'#e8ecf5', font:{size:11} } } },
-      scales:{
-        x:{ ticks:{ color:'#8892a4' }, grid:{ color:'#2a3045' } },
-        y:{ ticks:{ color:'#8892a4' }, grid:{ color:'#2a3045' } }
-      }
-    }
+    type:'line', data:{labels, datasets},
+    options:{responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{labels:{color:'#e8ecf5',font:{size:11}}}},
+      scales:{x:{ticks:{color:'#8892a4'},grid:{color:'#2a3045'}},y:{ticks:{color:'#8892a4'},grid:{color:'#2a3045'}}}}
   });
 }
-
 function renderInsights(id, ins) {
   const box  = document.getElementById(id+'-insights');
   const grid = document.getElementById(id+'-ins-grid');
@@ -1595,17 +1647,31 @@ function renderInsights(id, ins) {
   box.style.display = 'block';
 }
 
+// ─── EXPORT ───────────────────────────────────────────────────────────────────
 function exportDash(id) {
   if (!dashData) { alert('No data to export.'); return; }
   const wb    = XLSX.utils.book_new();
   const table = document.querySelector(`#sec-${id} table`);
   if (!table) return;
   const ws   = XLSX.utils.table_to_sheet(table);
-  const names = {d1:'Leads_Funnel', d2:'Disposed_Analysis', d3:'DIY_NonDIY', d4:'Volume_Bucket'};
+  const names = {d1:'Leads_Funnel', d2:'Disposed_Analysis', d3:'Volume_Bucket', d4:'Margin_Bucket'};
+  // D4 has two tables — export both sheets
+  if (id === 'd4') {
+    const t15 = document.getElementById('d4-t15-tbody');
+    const t30 = document.getElementById('d4-t30-tbody');
+    if (!t15 || !t30) return;
+    const ws15 = XLSX.utils.table_to_sheet(t15.closest('table'));
+    const ws30 = XLSX.utils.table_to_sheet(t30.closest('table'));
+    XLSX.utils.book_append_sheet(wb, ws15, 'T15_Margin_Bucket');
+    XLSX.utils.book_append_sheet(wb, ws30, 'T30_Margin_Bucket');
+    XLSX.writeFile(wb, `MOM_Margin_Bucket_${new Date().toISOString().slice(0,10)}.xlsx`);
+    return;
+  }
   XLSX.utils.book_append_sheet(wb, ws, names[id] || id);
   XLSX.writeFile(wb, `MOM_${names[id]}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
+// ─── CARD STATUS ──────────────────────────────────────────────────────────────
 function updateCardStatuses() {
   ['d1','d2','d3','d4'].forEach(id => {
     const el = document.getElementById('cardStatus-'+id);
@@ -1616,6 +1682,8 @@ function updateCardStatuses() {
 
 function updateHomeSummaries() {
   if (!dashData) return;
+
+  // D1 summary: Conv % current vs previous
   const d1 = dashData.d1;
   const convCurr = d1.curr.leads > 0 ? (d1.curr.acOpen / d1.curr.leads * 100) : 0;
   const convPrev = d1.prev.leads > 0 ? (d1.prev.acOpen / d1.prev.leads * 100) : 0;
@@ -1623,6 +1691,8 @@ function updateHomeSummaries() {
   const convSign = convDiff >= 0 ? '+' : '';
   const convColor = convDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
   setSummary('d1', `Conv %: <strong>${convCurr.toFixed(2)}%</strong> vs <strong>${convPrev.toFixed(2)}%</strong> prev &nbsp;<span style="color:${convColor};font-family:Space Mono,monospace;font-size:11px">${convSign}${convDiff.toFixed(2)}%</span>`);
+
+  // D2 summary: Disposed % current vs previous
   const d2 = dashData.d2;
   const dispC = d2.curr.leads > 0 ? (d2.curr.disposed / d2.curr.leads * 100) : 0;
   const dispP = d2.prev.leads > 0 ? (d2.prev.disposed / d2.prev.leads * 100) : 0;
@@ -1630,19 +1700,25 @@ function updateHomeSummaries() {
   const dispSign = dispDiff >= 0 ? '+' : '';
   const dispColor = dispDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
   setSummary('d2', `Disposed %: <strong>${dispC.toFixed(2)}%</strong> vs <strong>${dispP.toFixed(2)}%</strong> prev &nbsp;<span style="color:${dispColor};font-family:Space Mono,monospace;font-size:11px">${dispSign}${dispDiff.toFixed(2)}%</span>`);
+
+  // D3 summary: top volume bucket this month (dashData.d3 = Volume Bucket)
   const d3 = dashData.d3;
-  const ftPctC = d3.curr.accounts > 0 ? ((d3.curr.diyFT + d3.curr.nonDiyFT) / d3.curr.accounts * 100) : 0;
-  const ftPctP = d3.prev.accounts > 0 ? ((d3.prev.diyFT + d3.prev.nonDiyFT) / d3.prev.accounts * 100) : 0;
-  const ftDiff = ftPctC - ftPctP;
-  const ftSign = ftDiff >= 0 ? '+' : '';
-  const ftColor = ftDiff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
-  setSummary('d3', `FT Done %: <strong>${ftPctC.toFixed(2)}%</strong> vs <strong>${ftPctP.toFixed(2)}%</strong> prev &nbsp;<span style="color:${ftColor};font-family:Space Mono,monospace;font-size:11px">${ftSign}${ftDiff.toFixed(2)}%</span>`);
-  const d4 = dashData.d4;
   let topBucket = '', topCount = 0;
-  VOLUME_BUCKETS.forEach(b => { if ((d4.curr[b]||0) > topCount) { topCount = d4.curr[b]; topBucket = b; } });
-  const totalFT = VOLUME_BUCKETS.reduce((s,b) => s + (d4.curr[b]||0), 0);
-  const topPct = totalFT > 0 ? (topCount / totalFT * 100).toFixed(1) : '0.0';
-  setSummary('d4', `Top bucket: <strong>₹${topBucket}</strong> — <strong>${topCount.toLocaleString()}</strong> FTs (${topPct}% of total)`);
+  VOLUME_BUCKETS.forEach(b => { if ((d3.curr[b]||0) > topCount) { topCount = d3.curr[b]; topBucket = b; } });
+  const totalFT = VOLUME_BUCKETS.reduce((s,b) => s + (d3.curr[b]||0), 0);
+  const topPct  = totalFT > 0 ? (topCount / totalFT * 100).toFixed(1) : '0.0';
+  setSummary('d3', `Top bucket: <strong>₹${topBucket}</strong> — <strong>${topCount.toLocaleString()}</strong> FTs (${topPct}% of total)`);
+
+  // D4 summary: total clients in T+15 margin this month
+  const d4 = dashData.d4;
+  if (d4) {
+    const totalT15C = MARGIN_BUCKETS.reduce((s,b) => s + (d4.curr.t15[b]||0), 0);
+    const totalT15P = MARGIN_BUCKETS.reduce((s,b) => s + (d4.prev.t15[b]||0), 0);
+    const t15Diff = totalT15C - totalT15P;
+    const t15Sign = t15Diff >= 0 ? '+' : '';
+    const t15Color = t15Diff >= 0 ? 'var(--accent3)' : 'var(--accent4)';
+    setSummary('d4', `T+15 clients: <strong>${totalT15C.toLocaleString()}</strong> vs <strong>${totalT15P.toLocaleString()}</strong> prev &nbsp;<span style="color:${t15Color};font-family:Space Mono,monospace;font-size:11px">${t15Sign}${t15Diff.toLocaleString()}</span>`);
+  }
 }
 
 function setSummary(dashId, html) {
@@ -1672,12 +1748,11 @@ function updateHomeBar() {
   }
 }
 
+// ─── CLEAR DATA ───────────────────────────────────────────────────────────────
 function clearData() {
   if (!confirm('Clear all processed data? You will need to re-upload files.')) return;
   localStorage.removeItem('ftMOMDashboard');
-  dashData   = null;
-  leadsAgg   = [null, null];
-  ftAgg      = [null, null];
+  dashData = null; leadsAgg = [null, null]; ftAgg = [null, null];
   filesReady = {l0:false, l1:false, f0:false, f1:false};
   ['d1','d2','d3','d4'].forEach(id => {
     const el = document.getElementById('cardStatus-'+id);
@@ -1692,6 +1767,7 @@ function clearData() {
   lg('All data cleared', 'warn');
 }
 
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   try {
     const saved = localStorage.getItem('ftMOMDashboard');
@@ -1700,14 +1776,13 @@ window.addEventListener('DOMContentLoaded', () => {
       lg('Data loaded from previous session', 'ok');
       updateCardStatuses();
     }
-  } catch(e) {
-    console.warn('Could not load from localStorage:', e);
-  }
+  } catch(e) { console.warn('Could not load from localStorage:', e); }
   updateHomeBar();
-  loadFromGitHub();
+  loadFromCloudflare();
 });
 
-async function publishToGitHub(data) {
+// ─── CLOUDFLARE PUBLISH & LOAD ────────────────────────────────────────────────
+async function publishToCloudflare(data) {
   lg('Publishing to Cloudflare...', 'info');
   try {
     const res = await fetch(`${CF_WORKER_URL}/publish`, {
@@ -1721,12 +1796,10 @@ async function publishToGitHub(data) {
     } else {
       lg(`Publish failed: ${result.error}`, 'err');
     }
-  } catch(e) {
-    lg('Publish error: ' + e.message, 'err');
-  }
+  } catch(e) { lg('Publish error: ' + e.message, 'err'); }
 }
 
-async function loadFromGitHub() {
+async function loadFromCloudflare() {
   try {
     const res = await fetch(`${CF_WORKER_URL}/data`);
     if (res.ok) {
@@ -1739,10 +1812,9 @@ async function loadFromGitHub() {
         return;
       }
     }
-  } catch(e) {
-    // fall through to localStorage
-  }
+  } catch(e) { /* fall through to localStorage */ }
 }
 </script>
+
 </body>
 </html>
