@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -149,7 +148,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
 </header>
 
 <!-- PW MODAL -->
-
 <div class="modal" id="pwModal">
   <div class="mbox">
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
@@ -165,7 +163,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
 <div class="main">
 
   <!-- TOP NAVIGATION TABS -->
-
   <div class="top-tabs">
     <div class="ttab active" id="ttab-home" onclick="showTopTab('home')">🏠 Home</div>
     <div class="ttab" id="ttab-d1" onclick="openDash('d1')">📋 D1 — Leads Funnel</div>
@@ -176,7 +173,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- HOME SECTION -->
-
   <div class="section show" id="sec-home">
     <div class="bar info" id="homeBar"><span class="spin"></span> Loading data...</div>
     <div class="ts-label" id="homeTS" style="display:none"></div>
@@ -209,7 +205,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- D1: LEADS FUNNEL -->
-
   <div class="section" id="sec-d1">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -235,7 +230,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- D2: DISPOSED -->
-
   <div class="section" id="sec-d2">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -261,7 +255,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- D3: VOLUME BUCKET (formerly D4) -->
-
   <div class="section" id="sec-d3">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -287,7 +280,6 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- D4: MARGIN BUCKET -->
-
   <div class="section" id="sec-d4">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
@@ -324,67 +316,63 @@ tbody tr.row-total td{background:var(--surface2);font-weight:700;font-family:'Sp
   </div>
 
   <!-- ADMIN UPLOAD -->
-
   <div class="section" id="sec-admin">
     <div class="view-header">
       <button class="back-btn" onclick="goHome()">← Back</button>
       <h2>🔒 Admin Upload</h2>
     </div>
 
-```
-<div class="sub-tabs">
-  <div class="stab active" id="stab-leads" onclick="showSubTab('leads')">📁 Leads File</div>
-  <div class="stab" id="stab-ft" onclick="showSubTab('ft')">📈 FT Raw File</div>
-</div>
-
-<!-- LEADS UPLOAD -->
-<div id="sub-leads">
-  <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month Leads files.</p>
-  <div class="uploads-grid">
-    <div class="uzone" id="lz1">
-      <input type="file" id="lf1" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,1)"/>
-      <div class="ico">📂</div>
-      <h3>Leads — Current Month</h3>
-      <div class="fbadge" id="lf1-badge"></div>
+    <div class="sub-tabs">
+      <div class="stab active" id="stab-leads" onclick="showSubTab('leads')">📁 Leads File</div>
+      <div class="stab" id="stab-ft" onclick="showSubTab('ft')">📈 FT Raw File</div>
     </div>
-    <div class="uzone" id="lz2">
-      <input type="file" id="lf2" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,2)"/>
-      <div class="ico">🗂️</div>
-      <h3>Leads — Previous Month</h3>
-      <div class="fbadge" id="lf2-badge"></div>
-    </div>
-  </div>
-</div>
 
-<!-- FT UPLOAD -->
-<div id="sub-ft" style="display:none">
-  <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month FT Raw files.</p>
-  <div class="uploads-grid">
-    <div class="uzone" id="fz1">
-      <input type="file" id="ff1" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,1)"/>
-      <div class="ico">📂</div>
-      <h3>FT Raw — Current Month</h3>
-      <div class="fbadge" id="ff1-badge"></div>
+    <!-- LEADS UPLOAD -->
+    <div id="sub-leads">
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month Leads files.</p>
+      <div class="uploads-grid">
+        <div class="uzone" id="lz1">
+          <input type="file" id="lf1" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,1)"/>
+          <div class="ico">📂</div>
+          <h3>Leads — Current Month (.csv MUST)</h3>
+          <div class="fbadge" id="lf1-badge"></div>
+        </div>
+        <div class="uzone" id="lz2">
+          <input type="file" id="lf2" accept=".xlsx,.xls,.csv" onchange="handleLeadFile(event,2)"/>
+          <div class="ico">🗂️</div>
+          <h3>Leads — Previous Month (.csv MUST)</h3>
+          <div class="fbadge" id="lf2-badge"></div>
+        </div>
+      </div>
     </div>
-    <div class="uzone" id="fz2">
-      <input type="file" id="ff2" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,2)"/>
-      <div class="ico">🗂️</div>
-      <h3>FT Raw — Previous Month</h3>
-      <div class="fbadge" id="ff2-badge"></div>
+
+    <!-- FT UPLOAD -->
+    <div id="sub-ft" style="display:none">
+      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">Upload Current Month and Previous Month FT Raw files.</p>
+      <div class="uploads-grid">
+        <div class="uzone" id="fz1">
+          <input type="file" id="ff1" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,1)"/>
+          <div class="ico">📂</div>
+          <h3>FT Raw — Current Month (.xlsx MUST)</h3>
+          <div class="fbadge" id="ff1-badge"></div>
+        </div>
+        <div class="uzone" id="fz2">
+          <input type="file" id="ff2" accept=".xlsx,.xls,.csv" onchange="handleFTFile(event,2)"/>
+          <div class="ico">🗂️</div>
+          <h3>FT Raw — Previous Month (.xlsx MUST)</h3>
+          <div class="fbadge" id="ff2-badge"></div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="bar info" id="adminBar">⏳ Upload Leads and FT files to continue.</div>
-<div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
-<div class="prog-label" id="progLabel" style="display:none"></div>
-<div class="logbox" id="logBox"></div>
-<div class="btns" id="procBtns" style="display:none">
-  <button class="btn btn-green" id="procBtn" onclick="runProcess()">⚡ Process & Generate Dashboards</button>
-  <button class="btn btn-red" onclick="clearData()">🗑️ Clear All Data</button>
-</div>
-```
-
+    <div class="bar info" id="adminBar">⏳ Upload Leads and FT files to continue.</div>
+    <div class="prog-wrap" id="progWrap" style="display:none"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-label" id="progLabel" style="display:none"></div>
+    <div class="logbox" id="logBox"></div>
+    <div class="btns" id="procBtns" style="display:none">
+      <button class="btn btn-green" id="procBtn" onclick="runProcess()">⚡ Process & Generate Dashboards</button>
+      <button class="btn btn-red" onclick="clearData()">🗑️ Clear All Data</button>
+    </div>
   </div>
 
 </div><!-- /main -->
@@ -640,7 +628,8 @@ function newFTAgg() {
   const agg = {
     total:0, rawTotal:0,
     clientCodes: new Set(), allTradeClientCodes: new Set(),
-    buckets:{}, t15Buckets:{}, t30Buckets:{}, minDate:null, maxDate:null,
+    buckets:{}, t15Buckets:{}, t30Buckets:{},
+    minDate:null, maxDate:null,
     byDay:{}, byMonthDay:{}, allTradeByMonthDay:{}
   };
   VOLUME_BUCKETS.forEach(b => agg.buckets[b] = 0);
@@ -781,11 +770,11 @@ async function streamAggregateFT(file, label, startPct) {
     if (bothSameMonth && bucket) agg.buckets[bucket]++;
     // D4 (Margin Bucket): bothSameMonth only
     if (bothSameMonth) {
-      const t15b = getMarginBucket(get('T+15 Gross') || get('T+15Gross') || '');
-      const t30b = getMarginBucket(get('T+30 Gross') || get('T+30Gross') || '');
-      if (t15b) agg.t15Buckets[t15b]++;
-      if (t30b) agg.t30Buckets[t30b]++;
-    }
+  	const t15b = getMarginBucket(get('T+15 Gross'));
+  	const t30b = getMarginBucket(get('T+30 Gross'));
+  	if (t15b !== '') agg.t15Buckets[t15b]++;
+  	if (t30b !== '') agg.t30Buckets[t30b]++;
+      }
     if (parsedDate) {
       if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
       if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
@@ -921,8 +910,7 @@ function aggregateFTRows(rows) {
     const bothSameMonth = parsedDate && activDate &&
       parsedDate.getMonth()    === activDate.getMonth() &&
       parsedDate.getFullYear() === activDate.getFullYear();
-    if (bucket) agg.buckets[bucket]++;
-    if (parsedDate) {
+      if (parsedDate) {
       if (!agg.minDate || parsedDate < agg.minDate) agg.minDate = parsedDate;
       if (!agg.maxDate || parsedDate > agg.maxDate) agg.maxDate = parsedDate;
       const day = parsedDate.getDate(), month = parsedDate.getMonth(), year = parsedDate.getFullYear();
@@ -1111,10 +1099,12 @@ function getVolumeBucket(vol) {
   if (v <= 50000) return '40001 - 50000'; return '> 50000';
 }
 function getMarginBucket(val) {
-  const v = parseFloat(String(val).replace(/,/g,''));
+  const s = String(val ?? '').trim();
+  if (s === '' || s === '-' || s === 'null') return '';
+  const v = parseFloat(s.replace(/,/g,''));
   if (isNaN(v)) return '';
-  if (v === 0 || v < 0) return '0';
-  if (v < 500)    return '1 - 499';
+  if (v <= 0)    return '0';       // catches 0 and negatives
+  if (v < 500)   return '1 - 499';
   if (v < 1000)   return '500 - 999';
   if (v < 5000)   return '1000 - 4999';
   if (v < 10000)  return '5000 - 9999';
@@ -1253,8 +1243,8 @@ async function runProcess() {
     await sleep(20);
 
     const d1 = {
-      curr: { leads:lCFinal.leads, acOpen:lCFinal.acOpen, ftDone:d1CurrFT, diyFT:d1CurrDiyFT, nonDiyFT:d1CurrNonDiyFT },
-      prev: { leads:lPFinal.leads, acOpen:lPFinal.acOpen, ftDone:d1PrevFT, diyFT:d1PrevDiyFT, nonDiyFT:d1PrevNonDiyFT }
+ 		 curr: { leads:lCFinal.leads, acOpen:lCFinal.acOpen, diyAcOpen:lCFinal.diyAcOpen, nonDiyAcOpen:lCFinal.nonDiyAcOpen, ftDone:d1CurrFT, diyFT:d1CurrDiyFT, nonDiyFT:d1CurrNonDiyFT },
+  		prev: { leads:lPFinal.leads, acOpen:lPFinal.acOpen, diyAcOpen:lPFinal.diyAcOpen, nonDiyAcOpen:lPFinal.nonDiyAcOpen, ftDone:d1PrevFT, diyFT:d1PrevDiyFT, nonDiyFT:d1PrevNonDiyFT }
     };
     const d2 = {
       curr: { leads:lCFinal.leads, disposed:lCFinal.disposed, nonDisposed:lCFinal.nonDisposed },
@@ -1346,16 +1336,23 @@ function renderD1() {
   const nonDiyFTPctCurr = c.ftDone > 0 ? (c.nonDiyFT / c.ftDone) * 100 : 0;
   const nonDiyFTPctPrev = p.ftDone > 0 ? (p.nonDiyFT / p.ftDone) * 100 : 0;
 
-  const rows = [
-    { label:'Leads',           curr:c.leads,        prev:p.leads,        isSub:false, isPct:false },
-    { label:'A/C Open',        curr:c.acOpen,        prev:p.acOpen,        isSub:false, isPct:false },
-    { label:'Conv %',          curr:convCurr,        prev:convPrev,        isSub:false, isPct:true  },
-    { label:'FT Done',         curr:c.ftDone,        prev:p.ftDone,        isSub:false, isPct:false },
-    { label:'DIY FT',          curr:c.diyFT,         prev:p.diyFT,         isSub:true,  isPct:false },
-    { label:'DIY FT In %',     curr:diyFTPctCurr,    prev:diyFTPctPrev,    isSub:true,  isPct:true  },
-    { label:'Non DIY FT',      curr:c.nonDiyFT,      prev:p.nonDiyFT,      isSub:true,  isPct:false },
-    { label:'Non DIY FT In %', curr:nonDiyFTPctCurr, prev:nonDiyFTPctPrev, isSub:true,  isPct:true  },
-  ];
+  const diyActRateCurr    = c.diyAcOpen    > 0 ? (c.diyFT    / c.diyAcOpen)    * 100 : 0;
+const diyActRatePrev    = p.diyAcOpen    > 0 ? (p.diyFT    / p.diyAcOpen)    * 100 : 0;
+const nonDiyActRateCurr = c.nonDiyAcOpen > 0 ? (c.nonDiyFT / c.nonDiyAcOpen) * 100 : 0;
+const nonDiyActRatePrev = p.nonDiyAcOpen > 0 ? (p.nonDiyFT / p.nonDiyAcOpen) * 100 : 0;
+
+const rows = [
+  { label:'Leads',                   curr:c.leads,          prev:p.leads,          isSub:false, isPct:false },
+  { label:'A/C Open',                curr:c.acOpen,          prev:p.acOpen,          isSub:false, isPct:false },
+  { label:'Conv %',                  curr:convCurr,          prev:convPrev,          isSub:false, isPct:true  },
+  { label:'FT Done',                 curr:c.ftDone,          prev:p.ftDone,          isSub:false, isPct:false },
+  { label:'DIY FT',                  curr:c.diyFT,           prev:p.diyFT,           isSub:true,  isPct:false },
+  { label:'DIY FT In %',             curr:diyFTPctCurr,      prev:diyFTPctPrev,      isSub:true,  isPct:true  },
+  { label:'DIY FT Activation Rate',  curr:diyActRateCurr,    prev:diyActRatePrev,    isSub:true,  isPct:true  },
+  { label:'Non DIY FT',              curr:c.nonDiyFT,        prev:p.nonDiyFT,        isSub:true,  isPct:false },
+  { label:'Non DIY FT In %',         curr:nonDiyFTPctCurr,   prev:nonDiyFTPctPrev,   isSub:true,  isPct:true  },
+  { label:'Non DIY FT Activation Rate', curr:nonDiyActRateCurr, prev:nonDiyActRatePrev, isSub:true, isPct:true },
+];
 
   let html = '';
   rows.forEach(r => {
@@ -1374,7 +1371,7 @@ function renderD1() {
     `A/C Open rate: <strong>${convCurr.toFixed(2)}%</strong> current vs <strong>${convPrev.toFixed(2)}%</strong> previous`,
     `FT count: <strong>${c.ftDone.toLocaleString()}</strong> this month vs <strong>${p.ftDone.toLocaleString()}</strong> previous`,
     `DIY FTs: <strong>${c.diyFT.toLocaleString()}</strong> (${diyFTPctCurr.toFixed(2)}%) | Non-DIY FTs: <strong>${c.nonDiyFT.toLocaleString()}</strong> (${nonDiyFTPctCurr.toFixed(2)}%) this month`,
-    `DIY FT share: <strong>${diyFTPctCurr.toFixed(2)}%</strong> current vs <strong>${diyFTPctPrev.toFixed(2)}%</strong> previous — ${fmtChangePctPoint(diyFTPctCurr, diyFTPctPrev).html}`,
+    `DIY FT activation rate: <strong>${diyActRateCurr.toFixed(2)}%</strong> current vs <strong>${diyActRatePrev.toFixed(2)}%</strong> previous — ${fmtChangePctPoint(diyActRateCurr, diyActRatePrev).html}`,
   ];
   renderInsights('d1', ins);
 
@@ -1815,6 +1812,5 @@ async function loadFromCloudflare() {
   } catch(e) { /* fall through to localStorage */ }
 }
 </script>
-
 </body>
 </html>
